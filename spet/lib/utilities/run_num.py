@@ -4,11 +4,11 @@
 import logging
 import os
 
-from . import file
+from spet.lib.utilities import file
 
 
 def write(lock_file):
-    """Write the persistant Intel Test Suite run number.
+    """Write the persistant SPET run number.
 
     Args:
         lock_file (str): The path to the .lock file.
@@ -26,13 +26,13 @@ def write(lock_file):
 
 
 def read(lock_file):
-    """Get the current Intel Test Suite run number.
+    """Get the current SPET run number.
 
     Args:
         lock_file (str): The path to the .lock file.
 
     Returns:
-        String: Intel Test Suite run number.
+        String: SPET run number.
     """
     try:
         return "{:03d}".format(int(file.read(lock_file).strip()))

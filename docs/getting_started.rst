@@ -23,38 +23,29 @@ Setup
 
 .. code-block:: bash
 
-    # Install `python3`
-    apt-get install python3
-    # or `yum install python3`
-    # or `zypper install python3`
+    pip3 install .
+    python3 setup install
 
-    # Change into the Server Performance Evaluation Tool root directory
-
-    # You may need to allow `run` to be executable
-    chmod +x run
 
 ***
 Run
 ***
 
 Once everything is set up, you can simply run Server Performance Evaluation
-Tool by executing the ``run`` file:
+Tool by executing the ``spet`` command:
 
 **Note: You need root access to run Server Performance Evaluation Tool.**
 
 .. code-block:: bash
 
-    # In the Server Performance Evaluation Tool root directory
-    sudo ./run
+    spet
 
-If for some reason, the run file does not work, you can call Server Performance
-Evaluation Tool by doing the following within the same directory:
+If for some reason, the CLI does not work, you can call Server Performance
+Evaluation Tool module with the following:
 
 .. code-block:: bash
 
-    python3 spet/
-    # or `cd spet`
-    # and `sudo python3 main.py`
+    python3 -m spet
 
 *******
 Results

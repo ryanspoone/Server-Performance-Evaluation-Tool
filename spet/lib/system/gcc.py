@@ -5,8 +5,8 @@ import logging
 import re
 
 from . import processor
-from ..utilities import execute
-from ..utilities import grep
+from spet.lib.utilities import execute
+from spet.lib.utilities import grep
 
 
 def version():

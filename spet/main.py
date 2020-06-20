@@ -50,7 +50,7 @@ from .lib.utilities import prettify
 from .lib.utilities import run_num
 from .lib.utilities import uglify
 
-__author__ = "ryan.spoone@intel.com (Ryan Spoone)"
+__author__ = "ryanspoone@gmail.com (Ryan Spoone)"
 
 
 def package_manger_installations():

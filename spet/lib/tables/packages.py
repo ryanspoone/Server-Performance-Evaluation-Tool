@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Used for creating a human readable display for SPET packages."""
 
-from ..system import java
+from spet.lib.system import java
 
 
 def __row_helper(title, value, unit=None, seperator=None):

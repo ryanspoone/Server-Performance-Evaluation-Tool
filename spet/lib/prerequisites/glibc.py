@@ -4,10 +4,10 @@
 import logging
 import os
 
-from ..utilities import download
-from ..utilities import execute
-from ..utilities import extract
-from ..utilities import prettify
+from spet.lib.utilities import download
+from spet.lib.utilities import execute
+from spet.lib.utilities import extract
+from spet.lib.utilities import prettify
 
 
 class GLibC:
@@ -125,7 +125,9 @@ class GLibC:
         os.makedirs(build_dir, exist_ok=True)
 
         execute.output(
-            "../configure --prefix=/usr/local/glibc", build_dir, environment=shell_env
+            "spet.lib./configure --prefix=/usr/local/glibc",
+            build_dir,
+            environment=shell_env,
         )
         execute.output("make -j " + str(cores), build_dir, environment=shell_env)
 

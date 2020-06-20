@@ -4,7 +4,7 @@
 import json
 import logging
 
-from . import file
+from spet.lib.utilities import file
 
 
 def write(file_path, json_data):

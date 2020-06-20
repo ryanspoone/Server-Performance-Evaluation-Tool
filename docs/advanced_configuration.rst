@@ -118,7 +118,7 @@ Options
 | osName             | Set the Operating System's distribution    | String  |
 |                    | name.                                      |         |
 +--------------------+--------------------------------------------+---------+
-| osVer              | Set the Operating System's distrubution    | String  |
+| osVer              | Set the Operating System's distribution    | String  |
 |                    | version.                                   |         |
 +--------------------+--------------------------------------------+---------+
 | gccVer             | Set the GNU Compiler version.              | String  |
