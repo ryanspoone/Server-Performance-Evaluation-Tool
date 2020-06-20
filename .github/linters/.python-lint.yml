@@ -4,7 +4,7 @@
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
-ignore=CVS
+ignore=CVS # yamllint disable-line
 
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
@@ -128,7 +128,9 @@ disable=print-statement,
         next-method-defined,
         dict-items-not-iterating,
         dict-keys-not-iterating,
-        dict-values-not-iterating
+        dict-values-not-iterating,
+        import-error,
+        unexpected-keyword-arg
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
