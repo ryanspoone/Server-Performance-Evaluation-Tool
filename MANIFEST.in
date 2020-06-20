@@ -1,0 +1,6 @@
+include LICENSE run README.rst
+recursive-include spet/src *
+recursive-include spet/lib *.py
+recursive-include docs *
+global-exclude *.pyc
+global-exclude .git
