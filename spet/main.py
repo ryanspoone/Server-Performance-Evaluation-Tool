@@ -44,7 +44,7 @@ from .lib.tables import commands as commands_table
 from .lib.tables import packages as packages_table
 from .lib.utilities import access
 from .lib.utilities import file
-from .lib.utilities import json
+from .lib.utilities import json_file
 from .lib.utilities import optimize
 from .lib.utilities import prettify
 from .lib.utilities import run_num

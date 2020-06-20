@@ -8,9 +8,9 @@ import shutil
 
 import resource
 
-from . import execute
-from . import grep
-from . import file
+from spet.lib.utilities import execute
+from spet.lib.utilities import grep
+from spet.lib.utilities import file
 
 
 def performance_governor():
