@@ -135,7 +135,7 @@ class Linpack:
             self.mathlib = "blis"
             mathlib_path = blis_dir
         else:
-            makefile = "Make.x86_64"
+            makefile = "Make.generic"
             self.mathlib = "openblas"
             mathlib_path = "{}/openblas".format(self.src_dir)
 
