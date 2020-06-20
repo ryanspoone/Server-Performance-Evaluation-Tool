@@ -3,7 +3,7 @@
 
 import textwrap
 
-from ..utilities import prettify
+from spet.lib.utilities import prettify
 
 
 def __format_helper(title, value, unit=None):
@@ -536,7 +536,7 @@ def linpack(result):
         textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
         + "\n"
     )
-    if "mathlib" in result and result["mathlib"] is "blis":
+    if "mathlib" in result and result["mathlib"] == "blis":
         display += seperator
         display += "* Copyright (C) 2017, Advanced Micro Devices, Inc.\n"
         display += "* Copyright (C) 2014, The University of Texas at Austin\n"

@@ -4,7 +4,7 @@
 import logging
 import re
 
-from ..utilities import execute
+from spet.lib.utilities import execute
 
 
 def version():

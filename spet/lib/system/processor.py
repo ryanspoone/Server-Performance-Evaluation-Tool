@@ -6,9 +6,9 @@ import os
 import re
 import shutil
 
-from ..utilities import execute
-from ..utilities import file
-from ..utilities import grep
+from spet.lib.utilities import execute
+from spet.lib.utilities import file
+from spet.lib.utilities import grep
 
 
 def name():

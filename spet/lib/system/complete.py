@@ -7,11 +7,11 @@ import os
 import sys
 
 from spet import overrides
-from . import gcc
-from . import java
-from . import memory
-from . import operating_system
-from . import processor
+from spet.lib.system import gcc
+from spet.lib.system import java
+from spet.lib.system import memory
+from spet.lib.system import operating_system
+from spet.lib.system import processor
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 

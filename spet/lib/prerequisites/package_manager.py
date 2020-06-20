@@ -4,8 +4,8 @@
 import logging
 import shutil
 
-from ..utilities import execute
-from ..utilities import prettify
+from spet.lib.utilities import execute
+from spet.lib.utilities import prettify
 
 
 def zypper(packages):

@@ -3,7 +3,7 @@
 
 import logging
 
-from ..utilities import prettify
+from spet.lib.utilities import prettify
 
 
 def __row_helper(title, value, unit=None, seperator=None):

@@ -4,9 +4,9 @@
 import logging
 import os
 
-from ..utilities import download
-from ..utilities import extract
-from ..utilities import prettify
+from spet.lib.utilities import download
+from spet.lib.utilities import extract
+from spet.lib.utilities import prettify
 
 
 class Cassandra:

@@ -9,8 +9,7 @@ are not already installed.
 import os
 import sys
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import setup, find_packages
 
 if sys.version_info < (3, 3):
     print("spet requires python3 version >= 3.3.", file=sys.stderr)
@@ -33,11 +32,11 @@ setup(
     author="Ryan Spoone",
     url="https://www.github.com/ryanspoone/spet",
     install_requires=[],
-    packages=find_packages("spet"),
-    package_dir={"": "spet"},
+    py_modules=["spet"],
+    packages=["spet"],
+    package_data={},
+    entry_points={"console_scripts": ["spet = spet.main:main"],},
     include_package_data=True,
-    entry_points={"console_scripts": ["spet = spet.run:main"]},
-    scripts=["run"],
     license="MIT",
     keywords=[
         "server performance evaluation tool",
@@ -55,7 +54,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3",

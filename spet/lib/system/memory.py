@@ -7,8 +7,8 @@ import os
 import re
 import shutil
 
-from ..utilities import execute
-from ..utilities import grep
+from spet.lib.utilities import execute
+from spet.lib.utilities import grep
 
 
 def __closest_power_of_two(number):

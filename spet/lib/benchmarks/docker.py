@@ -11,13 +11,13 @@ import statistics
 import subprocess
 import time
 
-from ..utilities import download
-from ..utilities import execute
-from ..utilities import extract
-from ..utilities import file
-from ..utilities import grep
-from ..utilities import optimize
-from ..utilities import prettify
+from spet.lib.utilities import download
+from spet.lib.utilities import execute
+from spet.lib.utilities import extract
+from spet.lib.utilities import file
+from spet.lib.utilities import grep
+from spet.lib.utilities import optimize
+from spet.lib.utilities import prettify
 
 
 class Docker:

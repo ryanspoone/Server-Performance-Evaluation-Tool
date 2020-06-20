@@ -7,7 +7,7 @@ import stat
 
 
 def is_root():
-    """If Intel Test Suite has root access or not.
+    """If SPET has root access or not.
 
     Example:
         >>> is_root()

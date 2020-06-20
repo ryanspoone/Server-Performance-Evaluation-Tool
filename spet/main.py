@@ -44,13 +44,13 @@ from .lib.tables import commands as commands_table
 from .lib.tables import packages as packages_table
 from .lib.utilities import access
 from .lib.utilities import file
-from .lib.utilities import json
+from .lib.utilities import json_file
 from .lib.utilities import optimize
 from .lib.utilities import prettify
 from .lib.utilities import run_num
 from .lib.utilities import uglify
 
-__author__ = "ryan.spoone@intel.com (Ryan Spoone)"
+__author__ = "ryanspoone@gmail.com (Ryan Spoone)"
 
 
 def package_manger_installations():
@@ -530,7 +530,7 @@ def main():
     logging.warning("\n")
 
     # Create results JSON
-    json.write(results_json, results)
+    json_file.write(results_json, results)
 
     # Create results file
     file.write(results_file, result_file.header(spet_ver))
