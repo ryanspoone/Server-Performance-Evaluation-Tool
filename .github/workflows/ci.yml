@@ -1,0 +1,32 @@
+###########################
+###########################
+## Linter GitHub Actions ##
+###########################
+###########################
+name: Lint Code Base
+
+#
+# Documentation:
+# https://help.github.com/en/articles/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on: [push, pull_request]
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: |
+          python3 -m pip install --upgrade pip
+          python3 setup.py install
+          pip3 install .
+      - uses: psf/black@master
+      #- uses: docker://github/super-linter:v2.1.0
