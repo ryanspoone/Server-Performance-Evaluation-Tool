@@ -530,7 +530,7 @@ def main():
     logging.warning("\n")
 
     # Create results JSON
-    json.write(results_json, results)
+    json_file.write(results_json, results)
 
     # Create results file
     file.write(results_file, result_file.header(spet_ver))
