@@ -39,11 +39,9 @@ class MySQL:
         """
         minor_ver = ".".join(self.mysql_ver.split(".")[:2])
         archive = "mysql-{}-linux-glibc{}-x86_64.tar.gz".format(
-            self.mysql_ver, self.glibc_ver
-        )
+            self.mysql_ver, self.glibc_ver)
         url = "https://dev.mysql.com/get/Downloads/MySQL-{}/{}".format(
-            minor_ver, archive
-        )
+            minor_ver, archive)
         archive_path = "{}/{}".format(self.src_dir, archive)
 
         if os.path.isfile(archive_path):
@@ -63,8 +61,7 @@ class MySQL:
             Boolean: True if extraction was successful otherwise False.
         """
         dir_path = "{}/mysql-{}-linux-glibc{}-x86_64".format(
-            self.src_dir, self.mysql_ver, self.glibc_ver
-        )
+            self.src_dir, self.mysql_ver, self.glibc_ver)
         file_path = dir_path + ".tar.gz"
 
         if os.path.isdir(self.mysql_dir):
@@ -73,9 +70,7 @@ class MySQL:
         if not os.path.isfile(file_path):
             prettify.error_message(
                 'Cannot extract MySQL because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                    file_path))
             return False
 
         logging.info("Extracting MySQL.")
@@ -98,9 +93,7 @@ class MySQL:
         if not os.path.isdir(self.mysql_dir):
             prettify.error_message(
                 'Cannot setup MySQL because "{}" could not be found.'.format(
-                    self.mysql_dir
-                )
-            )
+                    self.mysql_dir))
             return False
 
         if os.path.isdir(files_dir) and os.listdir(files_dir):
@@ -114,9 +107,8 @@ class MySQL:
             working_dir=self.mysql_dir,
         )
         execute.output(
-            "./bin/mysql_ssl_rsa_setup --user=root --basedir={} --datadir={}".format(
-                self.mysql_dir, files_dir
-            ),
+            "./bin/mysql_ssl_rsa_setup --user=root --basedir={} --datadir={}".
+            format(self.mysql_dir, files_dir),
             working_dir=self.mysql_dir,
         )
         return True

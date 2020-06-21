@@ -33,7 +33,8 @@ class BLIS:
         Returns:
             Boolean: True if download was successful otherwise False.
         """
-        archive_path = "{}/AMD-BLIS-Linux-{}.tar.gz".format(self.src_dir, self.version)
+        archive_path = "{}/AMD-BLIS-Linux-{}.tar.gz".format(
+            self.src_dir, self.version)
 
         if os.path.isfile(archive_path):
             return True
@@ -42,10 +43,8 @@ class BLIS:
             prettify.error_message(
                 "Unable to find an URL for BLIS. Please visit "
                 '"http://developer.amd.com/amd-cpu-libraries/blas-library/" to'
-                ' download BLIS and place the archive in the "{}" directory.'.format(
-                    self.src_dir
-                )
-            )
+                ' download BLIS and place the archive in the "{}" directory.'.
+                format(self.src_dir))
             return False
 
         logging.info("Downloading BLIS.")
@@ -69,8 +68,8 @@ class BLIS:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract BLIS because "{}" could not be found.'.format(file_path)
-            )
+                'Cannot extract BLIS because "{}" could not be found.'.format(
+                    file_path))
             return False
 
         logging.info("Extracting BLIS.")

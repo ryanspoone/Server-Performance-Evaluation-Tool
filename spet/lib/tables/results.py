@@ -88,14 +88,11 @@ def compilation(result, detailed=None):
     title = "Linux Kernel Compilation"
 
     display = seperator
-    header = (
-        "Software development and compute compilation performance. "
-        "Lower time is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Software development and compute compilation performance. "
+              "Lower time is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -107,16 +104,22 @@ def compilation(result, detailed=None):
             unit = str(result["unit"])
         if detailed:
             if "run1" in result:
-                display += __format_helper(title + ": Run 1", result["run1"], unit=unit)
+                display += __format_helper(title + ": Run 1",
+                                           result["run1"],
+                                           unit=unit)
             if "run2" in result:
-                display += __format_helper(title + ": Run 2", result["run2"], unit=unit)
+                display += __format_helper(title + ": Run 2",
+                                           result["run2"],
+                                           unit=unit)
             if "run3" in result:
-                display += __format_helper(title + ": Run 3", result["run3"], unit=unit)
+                display += __format_helper(title + ": Run 3",
+                                           result["run3"],
+                                           unit=unit)
             if "median" in result:
                 display += seperator
-                display += __format_helper(
-                    title + ": Median", result["median"], unit=unit
-                )
+                display += __format_helper(title + ": Median",
+                                           result["median"],
+                                           unit=unit)
         else:
             if "median" in result:
                 display += __format_helper(title, result["median"], unit=unit)
@@ -142,14 +145,11 @@ def zlib(result, detailed=None):
     seperator = "-" * 79 + "\n"
 
     display = seperator
-    header = (
-        "Compression and decompression performance for a 2 GB file "
-        "using zlib. Lower time is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Compression and decompression performance for a 2 GB file "
+              "using zlib. Lower time is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -164,51 +164,51 @@ def zlib(result, detailed=None):
         if detailed:
             # Compression runs
             if "run1" in result and "compress" in result["run1"]:
-                display += __format_helper(
-                    "Compression: Run 1", result["run1"]["compress"], unit=unit
-                )
+                display += __format_helper("Compression: Run 1",
+                                           result["run1"]["compress"],
+                                           unit=unit)
             if "run2" in result and "compress" in result["run2"]:
-                display += __format_helper(
-                    "Compression: Run 2", result["run2"]["compress"], unit=unit
-                )
+                display += __format_helper("Compression: Run 2",
+                                           result["run2"]["compress"],
+                                           unit=unit)
             if "run3" in result and "compress" in result["run3"]:
-                display += __format_helper(
-                    "Compression: Run 3", result["run3"]["compress"], unit=unit
-                )
+                display += __format_helper("Compression: Run 3",
+                                           result["run3"]["compress"],
+                                           unit=unit)
             display += seperator
             # Decompression Runs
             if "run1" in result and "decompress" in result["run1"]:
-                display += __format_helper(
-                    "Decompression: Run 1", result["run1"]["decompress"], unit=unit
-                )
+                display += __format_helper("Decompression: Run 1",
+                                           result["run1"]["decompress"],
+                                           unit=unit)
             if "run2" in result and "decompress" in result["run2"]:
-                display += __format_helper(
-                    "Decompression: Run 2", result["run2"]["decompress"], unit=unit
-                )
+                display += __format_helper("Decompression: Run 2",
+                                           result["run2"]["decompress"],
+                                           unit=unit)
             if "run3" in result and "decompress" in result["run3"]:
-                display += __format_helper(
-                    "Decompression: Run 3", result["run3"]["decompress"], unit=unit
-                )
+                display += __format_helper("Decompression: Run 3",
+                                           result["run3"]["decompress"],
+                                           unit=unit)
             display += seperator
             # Compression median
             if "median" in result and "compress" in result["median"]:
-                display += __format_helper(
-                    "Compression: Median", result["median"]["compress"], unit=unit
-                )
+                display += __format_helper("Compression: Median",
+                                           result["median"]["compress"],
+                                           unit=unit)
             # Decompression median
             if "median" in result and "decompress" in result["median"]:
-                display += __format_helper(
-                    "Decompression: Median", result["median"]["decompress"], unit=unit
-                )
+                display += __format_helper("Decompression: Median",
+                                           result["median"]["decompress"],
+                                           unit=unit)
         else:
             if "median" in result and "compress" in result["median"]:
-                display += __format_helper(
-                    "Compression", result["median"]["compress"], unit=unit
-                )
+                display += __format_helper("Compression",
+                                           result["median"]["compress"],
+                                           unit=unit)
             if "median" in result and "decompress" in result["median"]:
-                display += __format_helper(
-                    "Decompression", result["median"]["decompress"], unit=unit
-                )
+                display += __format_helper("Decompression",
+                                           result["median"]["decompress"],
+                                           unit=unit)
 
     display += seperator + "\n"
 
@@ -230,10 +230,9 @@ def lmbench(result):
 
     display = seperator
     header = "Cache latencies using LMbench. Lower latency is better."
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
     if "error" in result:
         display += __format_helper("L1-Cache Read Latency", "INVALID")
@@ -247,17 +246,17 @@ def lmbench(result):
         if "unit" in result:
             unit = str(result["unit"])
         if "level1" in result:
-            display += __format_helper(
-                "L1-Cache Read Latency", result["level1"], unit=unit
-            )
+            display += __format_helper("L1-Cache Read Latency",
+                                       result["level1"],
+                                       unit=unit)
         if "level2" in result:
-            display += __format_helper(
-                "L2-Cache Read Latency", result["level2"], unit=unit
-            )
+            display += __format_helper("L2-Cache Read Latency",
+                                       result["level2"],
+                                       unit=unit)
         if "level3" in result:
-            display += __format_helper(
-                "L3-Cache Read Latency", result["level3"], unit=unit
-            )
+            display += __format_helper("L3-Cache Read Latency",
+                                       result["level3"],
+                                       unit=unit)
 
     display += seperator + "\n"
 
@@ -278,14 +277,11 @@ def mlc(result):
     seperator = "-" * 79 + "\n"
 
     display = seperator
-    header = (
-        "Processor node-to-node memory latencies using Intel(R) "
-        "Memory Latency Checker. Lower latency is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Processor node-to-node memory latencies using Intel(R) "
+              "Memory Latency Checker. Lower latency is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
     if "error" in result:
         display += __format_helper("Node Latency", "INVALID")
@@ -323,13 +319,11 @@ def openssl(results, detailed=None):
     seperator = "-" * 79 + "\n"
 
     display = seperator
-    header = (
-        "Cryptography using OpenSSL AES-GCM 8192 bytes. " "Higher throughput is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Cryptography using OpenSSL AES-GCM 8192 bytes. "
+              "Higher throughput is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
     count = 0
     if "error" in results:
@@ -347,58 +341,46 @@ def openssl(results, detailed=None):
                 if "run1" in result and "encrypt" in result["run1"]:
                     display += __format_helper(
                         "Encryption Throughput ({}-bit): Run 1".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run1"]["encrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run1"]["encrypt"],
+                                                 suffix=unit),
                     )
                 if "run2" in result and "encrypt" in result["run2"]:
                     display += __format_helper(
                         "Encryption Throughput ({}-bit): Run 2".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run2"]["encrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run2"]["encrypt"],
+                                                 suffix=unit),
                     )
                 if "run3" in result and "encrypt" in result["run3"]:
                     display += __format_helper(
                         "Encryption Throughput ({}-bit): Run 3".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run3"]["encrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run3"]["encrypt"],
+                                                 suffix=unit),
                     )
                 display += seperator
                 # Decryption runs
                 if "run1" in result and "decrypt" in result["run1"]:
                     display += __format_helper(
                         "Decryption Throughput ({}-bit): Run 1".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run1"]["decrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run1"]["decrypt"],
+                                                 suffix=unit),
                     )
                 if "run2" in result and "decrypt" in result["run2"]:
                     display += __format_helper(
                         "Decryption Throughput ({}-bit): Run 2".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run2"]["decrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run2"]["decrypt"],
+                                                 suffix=unit),
                     )
                 if "run3" in result and "decrypt" in result["run3"]:
                     display += __format_helper(
                         "Decryption Throughput ({}-bit): Run 3".format(
-                            result["test_bit_size"]
-                        ),
-                        prettify.byte_per_second(
-                            result["run3"]["decrypt"], suffix=unit
-                        ),
+                            result["test_bit_size"]),
+                        prettify.byte_per_second(result["run3"]["decrypt"],
+                                                 suffix=unit),
                     )
                 display += seperator
 
@@ -409,26 +391,32 @@ def openssl(results, detailed=None):
             if detailed and "median" in result and "encrypt" in result["median"]:
                 display += __format_helper(
                     "Encryption Throughput ({}-bit): Median".format(
-                        result["test_bit_size"]
-                    ),
-                    prettify.byte_per_second(result["median"]["encrypt"], suffix=unit),
+                        result["test_bit_size"]),
+                    prettify.byte_per_second(result["median"]["encrypt"],
+                                             suffix=unit),
                 )
-            elif not detailed and "median" in result and "encrypt" in result["median"]:
+            elif not detailed and "median" in result and "encrypt" in result[
+                    "median"]:
                 display += __format_helper(
-                    "Encryption Throughput ({}-bit)".format(result["test_bit_size"]),
-                    prettify.byte_per_second(result["median"]["encrypt"], suffix=unit),
+                    "Encryption Throughput ({}-bit)".format(
+                        result["test_bit_size"]),
+                    prettify.byte_per_second(result["median"]["encrypt"],
+                                             suffix=unit),
                 )
             if detailed and "median" in result and "decrypt" in result["median"]:
                 display += __format_helper(
                     "Decryption Throughput ({}-bit): Median".format(
-                        result["test_bit_size"]
-                    ),
-                    prettify.byte_per_second(result["median"]["decrypt"], suffix=unit),
+                        result["test_bit_size"]),
+                    prettify.byte_per_second(result["median"]["decrypt"],
+                                             suffix=unit),
                 )
-            elif not detailed and "median" in result and "decrypt" in result["median"]:
+            elif not detailed and "median" in result and "decrypt" in result[
+                    "median"]:
                 display += __format_helper(
-                    "Decryption Throughput ({}-bit)".format(result["test_bit_size"]),
-                    prettify.byte_per_second(result["median"]["decrypt"], suffix=unit),
+                    "Decryption Throughput ({}-bit)".format(
+                        result["test_bit_size"]),
+                    prettify.byte_per_second(result["median"]["decrypt"],
+                                             suffix=unit),
                 )
         count += 1
     display += seperator + "\n"
@@ -453,13 +441,11 @@ def stream(result, detailed=None):
     title = "Triad Bandwidth"
 
     display = seperator
-    header = (
-        "Memory bandwidth using STREAM and OpenMPI. " "Higher throughput is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Memory bandwidth using STREAM and OpenMPI. "
+              "Higher throughput is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -496,8 +482,8 @@ def stream(result, detailed=None):
         else:
             if "median" in result:
                 display += __format_helper(
-                    title, prettify.byte_per_second(result["median"], suffix=unit)
-                )
+                    title,
+                    prettify.byte_per_second(result["median"], suffix=unit))
 
     display += seperator + "\n"
 
@@ -527,15 +513,12 @@ def linpack(result):
         mathlib = " OpenBLAS,"
 
     display = seperator
-    header = (
-        "Floating-point and math computing performance using "
-        "High-Performance Linpack,{} and OpenMPI. "
-        "Higher FLOPS is better.".format(mathlib)
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Floating-point and math computing performance using "
+              "High-Performance Linpack,{} and OpenMPI. "
+              "Higher FLOPS is better.".format(mathlib))
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     if "mathlib" in result and result["mathlib"] == "blis":
         display += seperator
         display += "* Copyright (C) 2017, Advanced Micro Devices, Inc.\n"
@@ -551,8 +534,7 @@ def linpack(result):
             unit = str(result["unit"])
         if "score" in result:
             display += __format_helper(
-                title, prettify.flops(result["score"], suffix=unit)
-            )
+                title, prettify.flops(result["score"], suffix=unit))
 
     display += seperator + "\n"
 
@@ -576,14 +558,11 @@ def sql(result, detailed=None):
     seperator = "-" * 79 + "\n"
 
     display = seperator
-    header = (
-        "SQL database computing performance using YCSB and MySQL. "
-        "Higher throughput is better. Lower latency is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("SQL database computing performance using YCSB and MySQL. "
+              "Higher throughput is better. Lower latency is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -603,114 +582,99 @@ def sql(result, detailed=None):
         if detailed:
             # Run 1
             if "run1" in result and "throughput" in result["run1"]:
-                display += __format_helper(
-                    "Throughput: Run 1", result["run1"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 1",
+                                           result["run1"]["throughput"],
+                                           unit=tp_unit)
             if "run1" in result and "read_latency" in result["run1"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 1",
-                    prettify.small_time(
-                        result["run1"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run1"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run1" in result and "update_latency" in result["run1"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 1",
-                    prettify.small_time(
-                        result["run1"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run1"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Run 2
             if "run2" in result and "throughput" in result["run2"]:
-                display += __format_helper(
-                    "Throughput: Run 2", result["run2"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 2",
+                                           result["run2"]["throughput"],
+                                           unit=tp_unit)
             if "run2" in result and "read_latency" in result["run2"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 2",
-                    prettify.small_time(
-                        result["run2"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run2"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run2" in result and "update_latency" in result["run2"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 2",
-                    prettify.small_time(
-                        result["run2"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run2"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Run 3
             if "run3" in result and "throughput" in result["run3"]:
-                display += __format_helper(
-                    "Throughput: Run 3", result["run3"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 3",
+                                           result["run3"]["throughput"],
+                                           unit=tp_unit)
             if "run3" in result and "read_latency" in result["run3"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 3",
-                    prettify.small_time(
-                        result["run3"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run3"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run3" in result and "update_latency" in result["run3"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 3",
-                    prettify.small_time(
-                        result["run3"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run3"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Medians
             if "median" in result and "throughput" in result["median"]:
-                display += __format_helper(
-                    "Throughput: Median", result["median"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Median",
+                                           result["median"]["throughput"],
+                                           unit=tp_unit)
             if "median" in result and "read_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Median",
-                    prettify.small_time(
-                        result["median"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "median" in result and "update_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Median",
-                    prettify.small_time(
-                        result["median"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["update_latency"],
+                                        suffix=lat_unit),
                 )
         else:
             if "median" in result and "throughput" in result["median"]:
-                display += __format_helper(
-                    "Throughput", int(result["median"]["throughput"]), unit=tp_unit
-                )
+                display += __format_helper("Throughput",
+                                           int(result["median"]["throughput"]),
+                                           unit=tp_unit)
             if "median" in result and "read_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Read Latency",
-                    prettify.small_time(
-                        result["median"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "median" in result and "update_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Update Latency",
-                    prettify.small_time(
-                        result["median"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["update_latency"],
+                                        suffix=lat_unit),
                 )
         # Variance
-        if (
-            "median" in result
-            and "throughput" in result["median"]
-            and "range" in result
-            and "throughput" in result["range"]
-        ):
+        if ("median" in result and "throughput" in result["median"] and
+                "range" in result and "throughput" in result["range"]):
             display += __format_helper(
                 "Thoughput Variance",
-                __variance_percentage(
-                    result["range"]["throughput"], result["median"]["throughput"]
-                ),
+                __variance_percentage(result["range"]["throughput"],
+                                      result["median"]["throughput"]),
             )
 
     display += seperator + "\n"
@@ -735,14 +699,11 @@ def nosql(result, detailed=None):
     seperator = "-" * 79 + "\n"
 
     display = seperator
-    header = (
-        "NoSQL database computing performance using YCSB and Cassandra. "
-        "Higher throughput is better. Lower latency is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("NoSQL database computing performance using YCSB and Cassandra. "
+              "Higher throughput is better. Lower latency is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -762,114 +723,99 @@ def nosql(result, detailed=None):
         if detailed:
             # Run 1
             if "run1" in result and "throughput" in result["run1"]:
-                display += __format_helper(
-                    "Throughput: Run 1", result["run1"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 1",
+                                           result["run1"]["throughput"],
+                                           unit=tp_unit)
             if "run1" in result and "read_latency" in result["run1"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 1",
-                    prettify.small_time(
-                        result["run1"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run1"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run1" in result and "update_latency" in result["run1"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 1",
-                    prettify.small_time(
-                        result["run1"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run1"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Run 2
             if "run2" in result and "throughput" in result["run2"]:
-                display += __format_helper(
-                    "Throughput: Run 2", result["run2"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 2",
+                                           result["run2"]["throughput"],
+                                           unit=tp_unit)
             if "run2" in result and "read_latency" in result["run2"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 2",
-                    prettify.small_time(
-                        result["run2"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run2"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run2" in result and "update_latency" in result["run2"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 2",
-                    prettify.small_time(
-                        result["run2"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run2"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Run 3
             if "run3" in result and "throughput" in result["run3"]:
-                display += __format_helper(
-                    "Throughput: Run 3", result["run3"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Run 3",
+                                           result["run3"]["throughput"],
+                                           unit=tp_unit)
             if "run3" in result and "read_latency" in result["run3"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Run 3",
-                    prettify.small_time(
-                        result["run3"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run3"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "run3" in result and "update_latency" in result["run3"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Run 3",
-                    prettify.small_time(
-                        result["run3"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["run3"]["update_latency"],
+                                        suffix=lat_unit),
                 )
             display += seperator
             # Medians
             if "median" in result and "throughput" in result["median"]:
-                display += __format_helper(
-                    "Throughput: Median", result["median"]["throughput"], unit=tp_unit
-                )
+                display += __format_helper("Throughput: Median",
+                                           result["median"]["throughput"],
+                                           unit=tp_unit)
             if "median" in result and "read_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Read Latency: Median",
-                    prettify.small_time(
-                        result["median"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "median" in result and "update_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Update Latency: Median",
-                    prettify.small_time(
-                        result["median"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["update_latency"],
+                                        suffix=lat_unit),
                 )
         else:
             if "median" in result and "throughput" in result["median"]:
-                display += __format_helper(
-                    "Throughput", int(result["median"]["throughput"]), unit=tp_unit
-                )
+                display += __format_helper("Throughput",
+                                           int(result["median"]["throughput"]),
+                                           unit=tp_unit)
             if "median" in result and "read_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Read Latency",
-                    prettify.small_time(
-                        result["median"]["read_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["read_latency"],
+                                        suffix=lat_unit),
                 )
             if "median" in result and "update_latency" in result["median"]:
                 display += __format_helper(
                     "95th Percentile Update Latency",
-                    prettify.small_time(
-                        result["median"]["update_latency"], suffix=lat_unit
-                    ),
+                    prettify.small_time(result["median"]["update_latency"],
+                                        suffix=lat_unit),
                 )
         # Variance
-        if (
-            "median" in result
-            and "throughput" in result["median"]
-            and "range" in result
-            and "throughput" in result["range"]
-        ):
+        if ("median" in result and "throughput" in result["median"] and
+                "range" in result and "throughput" in result["range"]):
             display += __format_helper(
                 "Thoughput Variance",
-                __variance_percentage(
-                    result["range"]["throughput"], result["median"]["throughput"]
-                ),
+                __variance_percentage(result["range"]["throughput"],
+                                      result["median"]["throughput"]),
             )
 
     display += seperator + "\n"
@@ -892,14 +838,11 @@ def docker(result):
     title = "Linux Kernel Compilation: Average"
 
     display = seperator
-    header = (
-        "Compilation performance with up to 100 containers using Docker."
-        " More containers and lower time is better."
-    )
-    display += (
-        textwrap.fill(header, width=79, break_long_words=False, break_on_hyphens=False)
-        + "\n"
-    )
+    header = ("Compilation performance with up to 100 containers using Docker."
+              " More containers and lower time is better.")
+    display += (textwrap.fill(
+        header, width=79, break_long_words=False, break_on_hyphens=False) +
+                "\n")
     display += boundary
 
     if "error" in result:
@@ -911,7 +854,8 @@ def docker(result):
             unit = str(result["unit"])
         if "average" in result and "times" in result:
             container_count = len(result["times"])
-            value = "{} Containers @ {:.2f}".format(container_count, result["average"])
+            value = "{} Containers @ {:.2f}".format(container_count,
+                                                    result["average"])
             display += __format_helper(title, value, unit=unit)
 
     display += seperator + "\n"

@@ -45,15 +45,12 @@ def formatted(commands):
         display += "Timed Kernel Compilation".center(79) + "\n"
         display += boundary
         for command in commands["Timed Kernel Compilation"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -62,15 +59,12 @@ def formatted(commands):
         display += "zlib".center(79) + "\n"
         display += boundary
         for command in commands["zlib"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -79,15 +73,12 @@ def formatted(commands):
         display += "LMbench".center(79) + "\n"
         display += boundary
         for command in commands["LMbench"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -96,15 +87,12 @@ def formatted(commands):
         display += "Intel(R) Memory Latency Checker".center(79) + "\n"
         display += boundary
         for command in commands["MLC"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -113,15 +101,12 @@ def formatted(commands):
         display += "OpenSSL".center(79) + "\n"
         display += boundary
         for command in commands["OpenSSL"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -130,15 +115,12 @@ def formatted(commands):
         display += "STREAM".center(79) + "\n"
         display += boundary
         for command in commands["STREAM"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -147,15 +129,12 @@ def formatted(commands):
         display += "High-Performance Linpack".center(79) + "\n"
         display += boundary
         for command in commands["High-Performance Linpack"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -164,15 +143,12 @@ def formatted(commands):
         display += "YCSB SQL using MySQL".center(79) + "\n"
         display += boundary
         for command in commands["YCSB SQL"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -181,15 +157,12 @@ def formatted(commands):
         display += "YCSB NoSQL using Cassandra".center(79) + "\n"
         display += boundary
         for command in commands["YCSB NoSQL"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 
@@ -198,15 +171,12 @@ def formatted(commands):
         display += "Docker".center(79) + "\n"
         display += boundary
         for command in commands["Docker"]:
-            display += (
-                textwrap.fill(
-                    __remove_paths(command),
-                    break_long_words=False,
-                    break_on_hyphens=False,
-                    subsequent_indent="        ",
-                )
-                + "\n"
-            )
+            display += (textwrap.fill(
+                __remove_paths(command),
+                break_long_words=False,
+                break_on_hyphens=False,
+                subsequent_indent="        ",
+            ) + "\n")
             display += seperator
         display += "\n"
 

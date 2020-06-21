@@ -35,9 +35,9 @@ class OpenBLAS:
             Boolean: True if download was successful otherwise False.
         """
         url = "http://github.com/xianyi/OpenBLAS/archive/v{}.tar.gz".format(
-            self.version
-        )
-        archive_path = "{}/openblas-{}.tar.gz".format(self.src_dir, self.version)
+            self.version)
+        archive_path = "{}/openblas-{}.tar.gz".format(self.src_dir,
+                                                      self.version)
 
         if os.path.isfile(archive_path):
             return True
@@ -64,17 +64,14 @@ class OpenBLAS:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract OpenBLAS because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                'Cannot extract OpenBLAS because "{}" could not be found.'.
+                format(file_path))
             return False
 
         logging.info("Extracting OpenBLAS.")
         extract.tar(file_path, self.src_dir)
-        os.rename(
-            "{}/OpenBLAS-{}".format(self.src_dir, self.version), self.openblas_dir
-        )
+        os.rename("{}/OpenBLAS-{}".format(self.src_dir, self.version),
+                  self.openblas_dir)
 
         if os.path.isdir(self.openblas_dir):
             return True
@@ -99,10 +96,8 @@ class OpenBLAS:
         if "-O" not in cflags:
             cflags += " -O3 "
         if avx512 is True:
-            cflags += (
-                " -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
-                " -mavx512ifma -mavx512vbmi "
-            )
+            cflags += (" -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
+                       " -mavx512ifma -mavx512vbmi ")
 
         bin_loc = self.openblas_dir + "/libopenblas.so"
         shell_env = os.environ.copy()
@@ -117,10 +112,8 @@ class OpenBLAS:
 
         if not os.path.isdir(self.openblas_dir):
             prettify.error_message(
-                'Cannot compile OpenBLAS because "{}" could not be found.'.format(
-                    self.openblas_dir
-                )
-            )
+                'Cannot compile OpenBLAS because "{}" could not be found.'.
+                format(self.openblas_dir))
             return False
 
         logging.info(
@@ -133,8 +126,7 @@ class OpenBLAS:
 
         execute.output(
             "make -j {} FC={} CC={} USE_OPENMP=1 USE_THREAD=1".format(
-                cores, mpifort_bin, mpicc_bin
-            ),
+                cores, mpifort_bin, mpicc_bin),
             self.openblas_dir,
             environment=shell_env,
         )

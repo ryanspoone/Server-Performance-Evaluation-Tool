@@ -53,10 +53,8 @@ class MemoryLatencyChecker:
             prettify.error_message(
                 "Unable to find an URL for MLC. Please visit "
                 "https://software.intel.com/en-us/articles/intelr-memory-latency-checker"  # nopep8
-                " to download MLC and place the archive in the {} directory.".format(
-                    self.src_dir
-                )
-            )
+                " to download MLC and place the archive in the {} directory.".
+                format(self.src_dir))
             return False
 
         logging.info("Downloading MLC.")
@@ -81,10 +79,9 @@ class MemoryLatencyChecker:
             prettify.error_message(
                 'Cannot extract MLC because "{}" could not be found.'
                 " Please download it from: \n\n"
-                "https://software.intel.com/en-us/articles/intelr-memory-latency-checker".format(  # nopep8
-                    file_path
-                )
-            )
+                "https://software.intel.com/en-us/articles/intelr-memory-latency-checker"
+                .format(  # nopep8
+                    file_path))
             return False
 
         logging.info("Extracting MLC.")
@@ -111,8 +108,7 @@ class MemoryLatencyChecker:
         if "run1" not in results:
             prettify.error_message(
                 "Cannot calculate the node statistics for MLC because the "
-                "results list is empty."
-            )
+                "results list is empty.")
             return results
 
         averages = []
@@ -176,7 +172,8 @@ class MemoryLatencyChecker:
         results = {"unit": "ns"}
 
         if not os.path.isfile(bin_loc):
-            text = 'Cannot run MLC because "{}" could not be found.'.format(bin_loc)
+            text = 'Cannot run MLC because "{}" could not be found.'.format(
+                bin_loc)
             prettify.error_message(text)
             return {"error": text}
 

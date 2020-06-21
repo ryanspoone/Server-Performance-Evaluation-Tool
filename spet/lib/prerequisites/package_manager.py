@@ -148,9 +148,9 @@ def unknown(packages):
     """
     logging.warning("Unknown package manager.")
     prettify.error_message(
-        "The appropriate package manager for your system could not be found"
-    )
-    print("Please try manually installing the following and rerun this program:")
+        "The appropriate package manager for your system could not be found")
+    print(
+        "Please try manually installing the following and rerun this program:")
 
     for package in packages:
         print(package)

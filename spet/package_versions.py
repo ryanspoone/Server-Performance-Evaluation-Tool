@@ -78,7 +78,8 @@ PACKAGE_VERSIONS = _packages(
     mysql_glibc="2.12",
     # Check https://software.intel.com/en-us/mkl for the latest MKL version
     mkl="2018.0.128",
-    mkl_url="http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12070/l_mkl_2018.0.128.tgz",
+    mkl_url=
+    "http://registrationcenter-download.intel.com/akdlm/irc_nas/tec/12070/l_mkl_2018.0.128.tgz",  # pylint: disable=line-too-long
     # Check http://developer.amd.com/amd-cpu-libraries/blas-library/ for the
     # latest BLIS version
     blis="0.9-11-Beta",

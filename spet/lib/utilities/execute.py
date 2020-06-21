@@ -27,7 +27,7 @@ def output(command, working_dir=None, environment=None):
         shell_env = os.environ.copy()
         if environment:
             shell_env.update(environment)
-        out = subprocess.check_output(
+        out = subprocess.check_output(  # pylint: disable=E1123
             command,
             stderr=subprocess.STDOUT,
             cwd=working_dir,
@@ -75,14 +75,14 @@ def timed(command, working_dir=None, environment=None):
             "subprocess.check_call('{}', cwd='{}', shell=True, "
             "universal_newlines=True, executable='/bin/bash', env={}, "
             "stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)".format(
-                command, working_dir, repr(shell_env)
-            )
-        )
+                command, working_dir, repr(shell_env)))
 
         # This way of timing it allows us to easily replicate timing measures
         # from the command line with the same amount of precision.
         try:
-            time = timeit.timeit(stmt=statement, setup="import subprocess", number=1)
+            time = timeit.timeit(stmt=statement,
+                                 setup="import subprocess",
+                                 number=1)
             return float(time)
         except subprocess.CalledProcessError:
             logging.debug('"%s" failed to complete.', command)
@@ -98,9 +98,9 @@ def pkill(process_name):
         process_name (str): The name to kill all processes with.
     """
     try:
-        subprocess.check_call(
-            ["pkill", process_name], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
-        )
+        subprocess.check_call(["pkill", process_name],
+                              stdout=subprocess.DEVNULL,
+                              stderr=subprocess.STDOUT)
     except IOError as err:
         logging.error(err)
     except subprocess.CalledProcessError as err:
@@ -116,9 +116,9 @@ def kill(pid):
         pid (str): The process id to kill.
     """
     try:
-        subprocess.check_call(
-            ["kill", pid], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
-        )
+        subprocess.check_call(["kill", pid],
+                              stdout=subprocess.DEVNULL,
+                              stderr=subprocess.STDOUT)
     except IOError as err:
         logging.debug(err)
     except subprocess.CalledProcessError as err:

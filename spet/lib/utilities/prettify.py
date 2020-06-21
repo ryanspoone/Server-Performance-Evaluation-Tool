@@ -21,13 +21,12 @@ def error_message(text):
                 80,
                 break_long_words=False,
                 break_on_hyphens=False,
-            )
-        )
+            ))
     except IOError as err:
         logging.error(err)
 
 
-def byte_size(nbytes, suffix="B"):
+def byte_size(nbytes=None, suffix="B"):
     """Human readable byte sizes.
 
     Args:
@@ -37,12 +36,15 @@ def byte_size(nbytes, suffix="B"):
     Returns:
         String: The best readable byte size.
     """
+    if nbytes is None:
+        return None
+
     try:
         suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
         index = 0
 
         if suffixes.index(suffix) >= 0:
-            value = nbytes * (1024.0 ** suffixes.index(suffix))
+            value = nbytes * (1024.0**suffixes.index(suffix))
         else:
             value = nbytes
 
@@ -55,7 +57,7 @@ def byte_size(nbytes, suffix="B"):
         logging.error(err)
 
 
-def byte_per_second(nbytes, suffix="B/s"):
+def byte_per_second(nbytes=None, suffix="B/s"):
     """Human readable bytes per second sizes.
 
     Args:
@@ -66,12 +68,15 @@ def byte_per_second(nbytes, suffix="B/s"):
     Returns:
         String: The best readable byte per second size.
     """
+    if nbytes is None:
+        return None
+
     try:
         suffixes = ["B/s", "KB/s", "MB/s", "GB/s", "TB/s", "PB/s"]
         index = 0
 
         if suffixes.index(suffix) >= 0:
-            value = nbytes * (1024.0 ** suffixes.index(suffix))
+            value = nbytes * (1024.0**suffixes.index(suffix))
         else:
             value = nbytes
 
@@ -84,7 +89,7 @@ def byte_per_second(nbytes, suffix="B/s"):
         logging.error(err)
 
 
-def time_elapsed(time, suffix="s"):
+def time_elapsed(time=None, suffix="s"):
     """Human readable time elapsed.
 
     Args:
@@ -94,12 +99,15 @@ def time_elapsed(time, suffix="s"):
     Returns:
         String: The best readable time elapsed.
     """
+    if time is None:
+        return None
+
     try:
         suffixes = ["s", "min", "h"]
         index = 0
 
         if suffixes.index(suffix) >= 0:
-            value = time * (60.0 ** suffixes.index(suffix))
+            value = time * (60.0**suffixes.index(suffix))
         else:
             value = time
 
@@ -112,7 +120,7 @@ def time_elapsed(time, suffix="s"):
         logging.error(err)
 
 
-def small_time(time, suffix="us"):
+def small_time(time=None, suffix="us"):
     """Human readable sub-second time.
 
     Args:
@@ -122,12 +130,15 @@ def small_time(time, suffix="us"):
     Returns:
         String: The best readable time elapsed.
     """
+    if time is None:
+        return None
+
     try:
         suffixes = ["us", "ms"]
         index = 0
 
         if suffixes.index(suffix) >= 0:
-            value = time * (1000.0 ** suffixes.index(suffix))
+            value = time * (1000.0**suffixes.index(suffix))
         else:
             value = time
 
@@ -150,12 +161,15 @@ def flops(nflops, suffix="FLOPS"):
     Returns:
         String: The best readable FLOPS.
     """
+    if nflops is None:
+        return None
+
     try:
         suffixes = ["FLOPS", "KFLOPS", "MFLOPS", "GFLOPS", "TFLOPS", "PFLOPS"]
         index = 0
 
         if suffixes.index(suffix) >= 0:
-            value = nflops * (1000.0 ** suffixes.index(suffix))
+            value = nflops * (1000.0**suffixes.index(suffix))
         else:
             value = nflops
 
@@ -168,7 +182,7 @@ def flops(nflops, suffix="FLOPS"):
         logging.error(err)
 
 
-def numbers(num):
+def numbers(num=None):
     """Human readable numbers.
 
     Args:
@@ -177,6 +191,9 @@ def numbers(num):
     Returns:
         String: The best readable number.
     """
+    if num is None:
+        return None
+
     try:
         suffixes = ["", "Thousand", "Million", "Billion", "Trillion"]
         index = 0
@@ -191,7 +208,7 @@ def numbers(num):
         logging.error(err)
 
 
-def exponential(number):
+def exponential(number=None):
     """Number to scientific notation.
 
     Args:
@@ -200,6 +217,9 @@ def exponential(number):
     Returns:
         String: The number in scientific notation.
     """
+    if number is None:
+        return None
+
     try:
         return "{:.2E}".format(number)
     except IOError as err:

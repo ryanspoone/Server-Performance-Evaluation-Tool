@@ -35,8 +35,7 @@ class Cassandra:
         """
         archive = "apache-cassandra-{}-bin.tar.gz".format(self.version)
         url = "http://www.gtlib.gatech.edu/pub/apache/cassandra/{}/{}".format(
-            self.version, archive
-        )
+            self.version, archive)
         archive_path = "{}/{}".format(self.src_dir, archive)
 
         if os.path.isfile(archive_path):
@@ -64,10 +63,8 @@ class Cassandra:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract Cassandra because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                'Cannot extract Cassandra because "{}" could not be found.'.
+                format(file_path))
             return False
 
         logging.info("Extracting Cassandra.")

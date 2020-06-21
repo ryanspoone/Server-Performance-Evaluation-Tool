@@ -85,7 +85,8 @@ def system_information():
             l1dCache=_overrides.l1dCache or processor.cache()[1],
             l2Cache=_overrides.l2Cache or processor.cache()[2],
             l3Cache=_overrides.l3Cache or processor.cache()[3],
-            processorFrequency=(_overrides.processorFrequency or processor.frequency()),
+            processorFrequency=(_overrides.processorFrequency or
+                                processor.frequency()),
             memoryFrequency=(_overrides.memoryFrequency or memory.frequency()),
             streamArraySize=_overrides.streamArraySize,
             numaNodes=_overrides.numaNodes or processor.numa_nodes(),

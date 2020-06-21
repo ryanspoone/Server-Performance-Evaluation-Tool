@@ -123,10 +123,8 @@ class STREAM:
             return True
 
         if not os.path.isfile(stream_file):
-            prettify.error_message(
-                'Cannot compile STREAM because "{}" could '
-                "not be found.".format(stream_file)
-            )
+            prettify.error_message('Cannot compile STREAM because "{}" could '
+                                   "not be found.".format(stream_file))
             return False
 
         if stream_array_size is None:
@@ -149,9 +147,9 @@ class STREAM:
 
         self.commands.append("Build: " + build_cmd)
 
-        output = execute.output(
-            build_cmd, working_dir=self.stream_dir, environment=shell_env
-        )
+        output = execute.output(build_cmd,
+                                working_dir=self.stream_dir,
+                                environment=shell_env)
 
         logging.debug(output)
 
@@ -201,8 +199,7 @@ class STREAM:
 
         if not os.path.isfile(stream_bin):
             text = 'Cannot run STREAM because "{}" could not be found.'.format(
-                stream_bin
-            )
+                stream_bin)
             prettify.error_message(text)
             return {"error": text}
 
@@ -225,9 +222,9 @@ class STREAM:
             optimize.prerun()
             time.sleep(10)
 
-            output = execute.output(
-                cmd, working_dir=self.stream_dir, environment=shell_env
-            )
+            output = execute.output(cmd,
+                                    working_dir=self.stream_dir,
+                                    environment=shell_env)
 
             file.write(result_file, output)
 

@@ -1,0 +1,6 @@
+#
+# To run yapf for this project, invoke as such from the base directory:
+#     yapf -i -r --style .style.yapf ./spet/
+#
+[style]
+based_on_style = google

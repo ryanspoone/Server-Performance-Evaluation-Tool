@@ -83,9 +83,7 @@ class Docker:
         if not os.path.isfile(file_path):
             prettify.error_message(
                 'Cannot extract Docker because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                    file_path))
             return False
 
         logging.info("Extracting Docker.")
@@ -115,9 +113,9 @@ class Docker:
             env["PATH"] = self.docker_dir + ":" + env["PATH"]
 
         logging.debug("Checking if Docker image is built.")
-        image_output = execute.output(
-            "docker images", working_dir=self.docker_dir, environment=env
-        )
+        image_output = execute.output("docker images",
+                                      working_dir=self.docker_dir,
+                                      environment=env)
         found_images = grep.text(image_output, name)
 
         if found_images:
@@ -152,16 +150,14 @@ class Docker:
         shell_env["CFLAGS"] = cflags
 
         major_version = linux_ver.split(".")[0]
-        url = (
-            "http://www.kernel.org/pub/linux/kernel/v{}.x/" "linux-{}.tar.gz"
-        ).format(major_version, linux_ver)
+        url = ("http://www.kernel.org/pub/linux/kernel/v{}.x/"
+               "linux-{}.tar.gz").format(major_version, linux_ver)
         build_cmd = (
             'docker build --build-arg cores={} --build-arg cflags="{}" '
             "--ulimit nofile=1048576:1048576 --build-arg url={} "
-            "--build-arg version={} -t {} {}".format(
-                cores, cflags, url, linux_ver, build_name, self.docker_dir
-            )
-        )
+            "--build-arg version={} -t {} {}".format(cores, cflags, url,
+                                                     linux_ver, build_name,
+                                                     self.docker_dir))
 
         self.commands.append("Build: " + build_cmd)
 
@@ -175,8 +171,7 @@ class Docker:
         logging.debug("Starting Docker daemon.")
         subprocess.Popen(
             "{}/dockerd --pidfile {} --data-root {} &".format(
-                self.docker_dir, pid_file, self.data_dir
-            ),
+                self.docker_dir, pid_file, self.data_dir),
             cwd=self.docker_dir,
             shell=True,
             env=shell_env,
@@ -187,15 +182,16 @@ class Docker:
 
         # Make sure Docker has enough IPs available to assign to containers
         if shutil.which("ifconfig"):
-            execute.output("ifconfig docker0 down && ifconfig docker0 172.17.0.1/16 up")
+            execute.output(
+                "ifconfig docker0 down && ifconfig docker0 172.17.0.1/16 up")
 
         if not os.path.isfile(dockerfile):
             shutil.copyfile(self.src_dir + "/provided/Dockerfile", dockerfile)
 
         if not self.__image_built(build_name, env=shell_env):
-            build_output = execute.output(
-                build_cmd, working_dir=self.docker_dir, environment=shell_env
-            )
+            build_output = execute.output(build_cmd,
+                                          working_dir=self.docker_dir,
+                                          environment=shell_env)
             logging.debug(build_output)
 
         if self.__image_built(build_name, env=shell_env):
@@ -248,9 +244,8 @@ class Docker:
         procs = []
 
         os.makedirs(self.results_dir, exist_ok=True)
-        shutil.copyfile(
-            self.docker_dir + "/Dockerfile", self.results_dir + "/Dockerfile"
-        )
+        shutil.copyfile(self.docker_dir + "/Dockerfile",
+                        self.results_dir + "/Dockerfile")
 
         if not os.path.isfile(self.docker_dir + "/dockerd"):
             message = "Cannot build. Docker directory not found."
@@ -260,8 +255,7 @@ class Docker:
         # Start Docker daemon
         subprocess.Popen(
             "{}/dockerd --pidfile {} --data-root {} &".format(
-                self.docker_dir, pid_file, self.data_dir
-            ),
+                self.docker_dir, pid_file, self.data_dir),
             cwd=self.docker_dir,
             shell=True,
             env=shell_env,
@@ -290,7 +284,8 @@ class Docker:
             )
             if containers:
                 execute.output(
-                    "{0}/docker rm $({0}/docker ps -a -q)".format(self.docker_dir),
+                    "{0}/docker rm $({0}/docker ps -a -q)".format(
+                        self.docker_dir),
                     working_dir=self.docker_dir,
                     environment=shell_env,
                 )
@@ -304,12 +299,10 @@ class Docker:
             test_name = build_name + "_test{}".format(count)
             # Note: We avoid using `-i -t` because it causes TTY issues
             #       with SSH connections.
-            run_command = (
-                "{}/docker run --ulimit nofile=1048576:1048576 "
-                '-e "cores={}" -e "cflags={}" --name {} {}'.format(
-                    self.docker_dir, cores, cflags, test_name, build_name
-                )
-            )
+            run_command = ("{}/docker run --ulimit nofile=1048576:1048576 "
+                           '-e "cores={}" -e "cflags={}" --name {} {}'.format(
+                               self.docker_dir, cores, cflags, test_name,
+                               build_name))
             if count == 0:
                 self.commands.append("Run: " + run_command)
 
@@ -346,12 +339,14 @@ class Docker:
             )
             if containers:
                 execute.output(
-                    "{0}/docker stop $({0}/docker ps -a -q)".format(self.docker_dir),
+                    "{0}/docker stop $({0}/docker ps -a -q)".format(
+                        self.docker_dir),
                     working_dir=self.docker_dir,
                     environment=shell_env,
                 )
                 execute.output(
-                    "{0}/docker rm $({0}/docker ps -a -q)".format(self.docker_dir),
+                    "{0}/docker rm $({0}/docker ps -a -q)".format(
+                        self.docker_dir),
                     working_dir=self.docker_dir,
                     environment=shell_env,
                 )

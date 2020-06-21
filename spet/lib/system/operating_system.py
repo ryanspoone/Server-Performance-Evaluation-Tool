@@ -26,17 +26,15 @@ def distribution():
     """
     try:
         if os.path.isfile("/etc/os-release"):
-            distribution_name = execute.output(r'. /etc/os-release && echo "${NAME}"')
+            distribution_name = execute.output(
+                r'. /etc/os-release && echo "${NAME}"')
             distribution_version = execute.output(
-                r'. /etc/os-release && echo "${VERSION}"'
-            )
+                r'. /etc/os-release && echo "${VERSION}"')
         elif os.path.isfile("/etc/lsb-release"):
             distribution_name = execute.output(
-                r'. /etc/lsb-release && echo "${DISTRIB_ID}"'
-            )
+                r'. /etc/lsb-release && echo "${DISTRIB_ID}"')
             distribution_version = execute.output(
-                r'. /etc/lsb-release && echo "${DISTRIB_RELEASE}"'
-            )
+                r'. /etc/lsb-release && echo "${DISTRIB_RELEASE}"')
         elif os.path.isfile("/etc/debian_version"):
             distribution_name = "Debian"
             distribution_version = file.read("/etc/debian_version")

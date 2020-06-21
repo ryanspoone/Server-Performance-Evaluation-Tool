@@ -58,7 +58,8 @@ def table(packages, processor):
     if packages.lmbench:
         display += __row_helper("LMbench:", packages.lmbench)
     if packages.mlc:
-        display += __row_helper("Intel(R) Memory Latency Checker:", packages.mlc)
+        display += __row_helper("Intel(R) Memory Latency Checker:",
+                                packages.mlc)
     if packages.openssl:
         display += __row_helper("OpenSSL:", packages.openssl)
     if packages.linpack:
@@ -84,11 +85,8 @@ def table(packages, processor):
         display += __row_helper("OpenMPI:", packages.openmpi)
     if packages.glibc:
         display += __row_helper("GNU C Library (glibc):", packages.glibc)
-    if (
-        "amd" not in processor.lower()
-        and "intel" not in processor.lower()
-        and packages.openblas
-    ):
+    if ("amd" not in processor.lower() and "intel" not in processor.lower() and
+            packages.openblas):
         display += __row_helper("OpenBLAS", packages.openblas)
     if packages.maven:
         display += __row_helper("Maven:", packages.maven)

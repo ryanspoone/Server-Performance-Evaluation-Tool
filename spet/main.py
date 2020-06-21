@@ -50,8 +50,6 @@ from .lib.utilities import prettify
 from .lib.utilities import run_num
 from .lib.utilities import uglify
 
-__author__ = "ryanspoone@gmail.com (Ryan Spoone)"
-
 
 def package_manger_installations():
     """Install all prerequisites from the system package manager."""
@@ -90,7 +88,8 @@ def install_prerequisites(root_dir, system_info, opts):
     if not extract_success:
         prettify.error_message("OpenMPI failed to extract.")
 
-    build_success = mpi.build(cores=system_info.cores, cflags=system_info.cflags)
+    build_success = mpi.build(cores=system_info.cores,
+                              cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("OpenMPI failed to compile.")
 
@@ -154,7 +153,8 @@ def install_prerequisites(root_dir, system_info, opts):
     if not extract_success:
         prettify.error_message("Glibc failed to extract.")
 
-    build_success = libc.build(cores=system_info.cores, cflags=system_info.cflags)
+    build_success = libc.build(cores=system_info.cores,
+                               cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("Glibc failed to compile.")
 
@@ -252,7 +252,9 @@ def benchmarks(root_dir, results_dir, system_info, opts):
     if opts.excludes is None or "openssl" not in opts.excludes:
         crypto.download()
         crypto.extract()
-        crypto.build(versions.glibc, cores=system_info.cores, cflags=system_info.cflags)
+        crypto.build(versions.glibc,
+                     cores=system_info.cores,
+                     cflags=system_info.cflags)
 
     if opts.excludes is None or "compilation" not in opts.excludes:
         kernel.download()
@@ -309,9 +311,9 @@ def benchmarks(root_dir, results_dir, system_info, opts):
     if opts.excludes is None or "docker" not in opts.excludes:
         containers.download()
         containers.extract()
-        containers.build(
-            versions.linux, cores=system_info.cores, cflags=system_info.cflags
-        )
+        containers.build(versions.linux,
+                         cores=system_info.cores,
+                         cflags=system_info.cflags)
 
     logging.warning("Done setting up and compiling benchmarks.")
 
@@ -354,13 +356,13 @@ def benchmarks(root_dir, results_dir, system_info, opts):
 
     if opts.excludes is None or "compilation" not in opts.excludes:
         results["Timed Kernel Compilation"] = kernel.run(
-            cores=system_info.cores, cflags=system_info.cflags
-        )
+            cores=system_info.cores, cflags=system_info.cflags)
         commands["Timed Kernel Compilation"] = kernel.commands
     else:
         results["Timed Kernel Compilation"] = {"skipped": True}
 
-    logging.warning(results_table.compilation(results["Timed Kernel Compilation"]))
+    logging.warning(
+        results_table.compilation(results["Timed Kernel Compilation"]))
 
     if opts.excludes is None or "zlib" not in opts.excludes:
         results["zlib"] = compression.run()
@@ -371,9 +373,9 @@ def benchmarks(root_dir, results_dir, system_info, opts):
     logging.warning(results_table.zlib(results["zlib"]))
 
     if opts.excludes is None or "linpack" not in opts.excludes:
-        results["High-Performance Linpack"] = hpl.run(
-            system_info.cores, system_info.threads, arch=system_info.archType
-        )
+        results["High-Performance Linpack"] = hpl.run(system_info.cores,
+                                                      system_info.threads,
+                                                      arch=system_info.archType)
         commands["High-Performance Linpack"] = hpl.commands
     else:
         results["High-Performance Linpack"] = {"skipped": True}
@@ -405,9 +407,8 @@ def benchmarks(root_dir, results_dir, system_info, opts):
     logging.warning(results_table.sql(results["YCSB SQL"]))
 
     if opts.excludes is None or "docker" not in opts.excludes:
-        results["Docker"] = containers.run(
-            cores=system_info.cores, cflags=system_info.cflags
-        )
+        results["Docker"] = containers.run(cores=system_info.cores,
+                                           cflags=system_info.cflags)
         commands["Docker"] = containers.commands
     else:
         results["Docker"] = {"skipped": True}
@@ -439,7 +440,8 @@ def main():
     run_num.write(run_file)
     nrun = run_num.read(run_file)
 
-    results_file_starter = "SPET.{}.{}".format(nrun, uglify.filename(processor_name))
+    results_file_starter = "SPET.{}.{}".format(nrun,
+                                               uglify.filename(processor_name))
 
     run_dir = "{}/{}".format(results_dir, results_file_starter)
 
@@ -456,8 +458,12 @@ def main():
     log_config = {
         "version": 1,
         "formatters": {
-            "info": {"user": "%(message)s"},
-            "debug": {"format": debug_format},
+            "info": {
+                "user": "%(message)s"
+            },
+            "debug": {
+                "format": debug_format
+            },
         },
         "handlers": {
             "console": {
@@ -478,7 +484,10 @@ def main():
                 "level": opts.loglevel or logging.WARNING,
             },
         },
-        "root": {"handlers": ("console", "file", "consolefile"), "level": "DEBUG"},
+        "root": {
+            "handlers": ("console", "file", "consolefile"),
+            "level": "DEBUG"
+        },
     }
     logging.config.dictConfig(log_config)
 
@@ -496,18 +505,16 @@ def main():
         sys.exit(
             prettify.error_message(
                 "You do not have root access. Please restart SPET once "
-                "you have the proper access. Exiting now."
-            )
-        )
+                "you have the proper access. Exiting now."))
 
     if opts.excludes:
         logging.debug("Benchmark exclusions: %s", str(opts.excludes))
 
-    logging.warning("\nInstalling prerequisites from the system's package " "manager.")
+    logging.warning("\nInstalling prerequisites from the system's package "
+                    "manager.")
     package_manger_installations()
-    logging.warning(
-        "Done installing prerequisites from the system's package " "manager.\n"
-    )
+    logging.warning("Done installing prerequisites from the system's package "
+                    "manager.\n")
 
     system_info = complete.system_information()
     logging.debug("system_info: %s", str(system_info))
@@ -538,9 +545,9 @@ def main():
     file.write(results_file, "\n", append=True)
     file.write(results_file, system.table(system_info), append=True)
     file.write(results_file, commands_table.formatted(commands), append=True)
-    file.write(
-        results_file, packages_table.table(versions, processor_name), append=True
-    )
+    file.write(results_file,
+               packages_table.table(versions, processor_name),
+               append=True)
     file.write(results_file, result_file.footer(), append=True)
 
     # Output file locations for logs, json, and text file.

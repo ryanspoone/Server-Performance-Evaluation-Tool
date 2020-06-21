@@ -29,6 +29,6 @@ def tar(archive, output_dir="."):
             for item in file:
                 file.extract(item, output_dir)
                 if not item.name.find(".tgz") or not item.name.find(".tar"):
-                    tar(item.name, "./" + item.name[: item.name.rfind("/")])
+                    tar(item.name, "./" + item.name[:item.name.rfind("/")])
     except IOError as err:
         logging.error(err)

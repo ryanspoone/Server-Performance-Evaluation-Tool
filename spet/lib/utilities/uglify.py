@@ -22,7 +22,8 @@ def filename(text):
         String: The filename ready text.
     """
     try:
-        invalid_chars = "[^-_. {}{}]+".format(string.ascii_letters, string.digits)
+        invalid_chars = "[^-_. {}{}]+".format(string.ascii_letters,
+                                              string.digits)
         # Convert to lowercase and remove everything within parentheses
         text = re.sub(r"\([^)]*\)", "", text.lower())
         # Remove invalid characters

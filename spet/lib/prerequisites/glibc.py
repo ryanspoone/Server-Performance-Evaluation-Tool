@@ -34,7 +34,8 @@ class GLibC:
         Returns:
             Boolean: True if download was successful otherwise False.
         """
-        url = "https://ftp.gnu.org/gnu/glibc/glibc-{}.tar.gz".format(self.version)
+        url = "https://ftp.gnu.org/gnu/glibc/glibc-{}.tar.gz".format(
+            self.version)
         archive_path = "{}/glibc-{}.tar.gz".format(self.src_dir, self.version)
 
         if os.path.isfile(archive_path):
@@ -62,9 +63,7 @@ class GLibC:
         if not os.path.isfile(file_path):
             prettify.error_message(
                 'Cannot extract glibc because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                    file_path))
             return False
 
         logging.info("Extracting glibc.")
@@ -113,14 +112,11 @@ class GLibC:
         if not os.path.isdir(self.glibc_dir):
             prettify.error_message(
                 'Cannot compile glibc because "{}" could not be found.'.format(
-                    self.glibc_dir
-                )
-            )
+                    self.glibc_dir))
             return False
 
-        logging.info(
-            'Compiling glibc using %d Make threads and "%s" CFLAGS', cores, cflags
-        )
+        logging.info('Compiling glibc using %d Make threads and "%s" CFLAGS',
+                     cores, cflags)
 
         os.makedirs(build_dir, exist_ok=True)
 
@@ -129,7 +125,9 @@ class GLibC:
             build_dir,
             environment=shell_env,
         )
-        execute.output("make -j " + str(cores), build_dir, environment=shell_env)
+        execute.output("make -j " + str(cores),
+                       build_dir,
+                       environment=shell_env)
 
         if os.path.isfile(bin_loc):
             return True
@@ -156,9 +154,7 @@ class GLibC:
         if not os.path.isdir(build_dir):
             prettify.error_message(
                 'Cannot install glibc because "{}" could not be found.'.format(
-                    build_dir
-                )
-            )
+                    build_dir))
             return False
 
         logging.info("Installing glibc using %d Make threads.", cores)

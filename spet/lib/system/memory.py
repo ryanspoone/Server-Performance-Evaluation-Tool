@@ -48,14 +48,9 @@ def total():
         ram_kb = None
 
         if shutil.which("lshw"):
-            lshw_output = (
-                execute.output(
-                    "lshw -class memory | grep -A 9 'bank:' | awk '/size:/ "
-                    "{print $2}'"
-                )
-                .rstrip()
-                .split("\n")
-            )
+            lshw_output = (execute.output(
+                "lshw -class memory | grep -A 9 'bank:' | awk '/size:/ "
+                "{print $2}'").rstrip().split("\n"))
             # lshw is in binary prefixed notation; however, it is actually
             # usually SI prefixed. Will do binary prefixed (kibibyte KiB)
             # conversion to SI prefixed (kilobyte KB); then at the end, do

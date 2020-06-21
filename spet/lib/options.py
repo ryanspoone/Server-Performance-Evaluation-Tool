@@ -67,6 +67,7 @@ class Options:
         self.known, self.unknown = self.parser.parse_known_args(args)[:]
 
         if self.unknown:
-            logging.info("WARNING: Unknown args received: %s", str(self.unknown))
+            logging.info("WARNING: Unknown args received: %s",
+                         str(self.unknown))
 
         return self.known
