@@ -52,7 +52,8 @@ class LMbench:
         if os.path.isfile(archive_path):
             return True
 
-        url = "http://www.bitmover.com/lmbench/lmbench{}.tar.gz".format(self.version)
+        url = "http://www.bitmover.com/lmbench/lmbench{}.tar.gz".format(
+            self.version)
 
         logging.info("Downloading LMbench.")
 
@@ -102,7 +103,8 @@ class LMbench:
         if "-O" not in cflags:
             cflags += " -O3 "
 
-        bin_loc = "{}/bin/{}-linux-gnu/lat_mem_rd".format(self.lmbench_dir, arch)
+        bin_loc = "{}/bin/{}-linux-gnu/lat_mem_rd".format(
+            self.lmbench_dir, arch)
         shell_env = os.environ.copy()
         shell_env["CFLAGS"] = cflags
         sccs_dir = self.lmbench_dir + "/SCCS"
@@ -113,14 +115,14 @@ class LMbench:
 
         if not os.path.isdir(self.lmbench_dir):
             text = 'Cannot compile LMbench because "{}" could not be ' "found.".format(
-                self.lmbench_dir
-            )
+                self.lmbench_dir)
             prettify.error_message(text)
             logging.error(text)
             return False
 
         logging.info(
-            'Compiling LMbench using "%s" arch, %d Make threads,' ' and "%s" CFLAGS.',
+            'Compiling LMbench using "%s" arch, %d Make threads,'
+            ' and "%s" CFLAGS.',
             arch,
             cores,
             shell_env["CFLAGS"],
@@ -200,7 +202,8 @@ class LMbench:
         thread = 0
         stride = 1024
         max_cache = 512
-        bin_loc = "{}/bin/{}-linux-gnu/lat_mem_rd".format(self.lmbench_dir, arch)
+        bin_loc = "{}/bin/{}-linux-gnu/lat_mem_rd".format(
+            self.lmbench_dir, arch)
         results = {"unit": "ns"}
 
         if not os.path.isfile(bin_loc):
@@ -223,9 +226,8 @@ class LMbench:
         if threads >= 3:
             thread = 2
 
-        run_command = "taskset -c {} {} {} {}".format(
-            thread, bin_loc, max_cache, stride
-        )
+        run_command = "taskset -c {} {} {} {}".format(thread, bin_loc,
+                                                      max_cache, stride)
 
         self.commands.append("Run: " + run_command)
 
@@ -234,18 +236,15 @@ class LMbench:
         file.write(result_file, output)
 
         l1_latency = self.__closest_cache_latency(
-            float(l1_cache) / 1024.0 / 1024.0, output
-        )
+            float(l1_cache) / 1024.0 / 1024.0, output)
 
         if l2_cache:
             l2_latency = self.__closest_cache_latency(
-                float(l2_cache) / 1024.0 / 1024.0, output
-            )
+                float(l2_cache) / 1024.0 / 1024.0, output)
 
         if l3_cache:
             l3_latency = self.__closest_cache_latency(
-                float(l3_cache) / 1024.0 / 1024.0, output
-            )
+                float(l3_cache) / 1024.0 / 1024.0, output)
 
         if l1_latency:
             results["level1"] = float(l1_latency)

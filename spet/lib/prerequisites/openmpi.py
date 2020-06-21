@@ -37,9 +37,8 @@ class OpenMPI:
         # Remove last number from version
         short_version = ".".join(self.version.split(".")[:-1])
 
-        url = (
-            "https://www.open-mpi.org/software/ompi/v{}/downloads/" "openmpi-{}.tar.gz"
-        ).format(short_version, self.version)
+        url = ("https://www.open-mpi.org/software/ompi/v{}/downloads/"
+               "openmpi-{}.tar.gz").format(short_version, self.version)
         archive_path = "{}/openmpi-{}.tar.gz".format(self.src_dir, self.version)
 
         if os.path.isfile(archive_path):
@@ -67,10 +66,8 @@ class OpenMPI:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract OpenMPI because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                'Cannot extract OpenMPI because "{}" could not be found.'.
+                format(file_path))
             return False
 
         logging.info("Extracting OpenMPI.")
@@ -108,24 +105,21 @@ class OpenMPI:
 
         if not os.path.isdir(self.mpi_dir):
             prettify.error_message(
-                'Cannot compile OpenMPI because "{}" could not be found.'.format(
-                    self.mpi_dir
-                )
-            )
+                'Cannot compile OpenMPI because "{}" could not be found.'.
+                format(self.mpi_dir))
             return False
 
-        logging.info(
-            'Compiling OpenMPI using %d Make threads and "%s" CFLAGS.', cores, cflags
-        )
+        logging.info('Compiling OpenMPI using %d Make threads and "%s" CFLAGS.',
+                     cores, cflags)
 
         os.makedirs(build_dir, exist_ok=True)
 
-        execute.output(
-            "../configure --prefix=" + build_dir, build_dir, environment=shell_env
-        )
-        execute.output(
-            "make -s -j {} all".format(cores), build_dir, environment=shell_env
-        )
+        execute.output("../configure --prefix=" + build_dir,
+                       build_dir,
+                       environment=shell_env)
+        execute.output("make -s -j {} all".format(cores),
+                       build_dir,
+                       environment=shell_env)
 
         return True
 
@@ -149,10 +143,8 @@ class OpenMPI:
 
         if not os.path.isdir(build_dir):
             prettify.error_message(
-                'Cannot install OpenMPI because "{}" could not be found.'.format(
-                    self.mpi_dir
-                )
-            )
+                'Cannot install OpenMPI because "{}" could not be found.'.
+                format(self.mpi_dir))
             return False
 
         logging.info("Installing OpenMPI using %d Make threads.", cores)

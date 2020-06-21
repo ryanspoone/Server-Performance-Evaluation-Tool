@@ -111,6 +111,3 @@ corpus.txt
 AMD-BLIS*.tar
 l_mkl_*
 mlc_v*
-
-# VSCode config
-.vscode

@@ -59,8 +59,7 @@ def flags():
             march_mcpu = "mcpu"
 
         march_output = execute.output(
-            "gcc -{}=native -Q --help=target".format(march_mcpu)
-        )
+            "gcc -{}=native -Q --help=target".format(march_mcpu))
         march_flag = grep.text(march_output, "-{}=".format(march_mcpu))
         march_flag = march_flag[0].rstrip().split()[1].strip()
 
@@ -68,8 +67,8 @@ def flags():
             march_flag = "native"
 
         mtune_output = execute.output(
-            "gcc -{}={}  -mtune=native -Q --help=target".format(march_mcpu, march_flag)
-        )
+            "gcc -{}={}  -mtune=native -Q --help=target".format(
+                march_mcpu, march_flag))
         mtune_flag = grep.text(mtune_output, "-mtune=")
         mtune_flag = mtune_flag[0].rstrip().split()[1].strip()
 

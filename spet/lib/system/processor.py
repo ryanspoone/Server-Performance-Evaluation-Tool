@@ -90,15 +90,14 @@ def topology():
             sockets = int(sockets.strip())
 
             threads_per_core = grep.text(lscpu_output, r"Thread\(s\) per core:")
-            threads_per_core = re.sub(
-                r"Thread\(s\) per core:\s*", "", threads_per_core[0]
-            )
+            threads_per_core = re.sub(r"Thread\(s\) per core:\s*", "",
+                                      threads_per_core[0])
             threads_per_core = int(threads_per_core.strip())
 
-            cores_per_processor = grep.text(lscpu_output, r"Core\(s\) per socket:")
-            cores_per_processor = re.sub(
-                r"Core\(s\) per socket:\s*", "", cores_per_processor[0]
-            )
+            cores_per_processor = grep.text(lscpu_output,
+                                            r"Core\(s\) per socket:")
+            cores_per_processor = re.sub(r"Core\(s\) per socket:\s*", "",
+                                         cores_per_processor[0])
             cores_per_processor = int(cores_per_processor.strip())
 
         if not sockets and shutil.which("dmidecode"):
@@ -112,18 +111,17 @@ def topology():
             total_threads = int(total_threads)
 
             cores_per_processor = grep.text(dmidecode_output, r"Core Count\:")
-            cores_per_processor = re.sub(r"Core Count:\s*", "", cores_per_processor[0])
+            cores_per_processor = re.sub(r"Core Count:\s*", "",
+                                         cores_per_processor[0])
             cores_per_processor = cores_per_processor.strip().split()[0]
             cores_per_processor = int(cores_per_processor)
 
             threads_per_core = total_threads / cores_per_processor
 
         if not sockets:
-            thread_siblings = (
-                file.read("/sys/devices/system/cpu/cpu1/topology/thread_siblings_list")
-                .strip()
-                .split(",")
-            )
+            thread_siblings = (file.read(
+                "/sys/devices/system/cpu/cpu1/topology/thread_siblings_list").
+                               strip().split(","))
             threads_per_core = 1
 
             if shutil.which("nproc"):
@@ -179,8 +177,7 @@ def numa_nodes():
                 nodes = int(stdout.rstrip())
         if not nodes and shutil.which("dmesg"):
             stdout = execute.output(
-                r'dmesg | grep -c "NUMA node\|No NUMA configuration found"'
-            )
+                r'dmesg | grep -c "NUMA node\|No NUMA configuration found"')
             if stdout:
                 nodes = int(stdout.rstrip())
         return nodes

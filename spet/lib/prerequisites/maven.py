@@ -35,10 +35,8 @@ class Maven:
         """
         major_ver = self.version.split(".")[0]
         archive = "apache-maven-{}-bin.tar.gz".format(self.version)
-        url = (
-            "http://apache.mirrors.lucidnetworks.net/maven/maven-{}/{}/"
-            "binaries/{}".format(major_ver, self.version, archive)
-        )
+        url = ("http://apache.mirrors.lucidnetworks.net/maven/maven-{}/{}/"
+               "binaries/{}".format(major_ver, self.version, archive))
         archive_path = "{}/{}".format(self.src_dir, archive)
 
         if os.path.isfile(archive_path):
@@ -67,9 +65,7 @@ class Maven:
         if not os.path.isfile(file_path):
             prettify.error_message(
                 'Cannot extract Maven because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                    file_path))
             return False
 
         logging.info("Extracting Maven.")

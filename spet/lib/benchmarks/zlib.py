@@ -80,19 +80,16 @@ class Zlib:
             return True
 
         if not os.path.isfile(file_path):
-            prettify.error_message(
-                'Cannot extract zlib because "{}" could '
-                "not be found.".format(file_path)
-            )
+            prettify.error_message('Cannot extract zlib because "{}" could '
+                                   "not be found.".format(file_path))
             return False
 
         logging.info("Extracting zlib.")
 
         extract.tar(file_path, self.src_dir)
 
-        logging.debug(
-            'Renaming "%s-%s" to "%s".', self.zlib_dir, self.version, self.zlib_dir
-        )
+        logging.debug('Renaming "%s-%s" to "%s".', self.zlib_dir, self.version,
+                      self.zlib_dir)
         os.rename("{}-{}".format(self.zlib_dir, self.version), self.zlib_dir)
 
     def build(self, cores=None, cflags=None):
@@ -124,15 +121,12 @@ class Zlib:
             return True
 
         if not os.path.isdir(self.zlib_dir):
-            prettify.error_message(
-                'Cannot compile zlib because "{}" could '
-                "not be found.".format(self.zlib_dir)
-            )
+            prettify.error_message('Cannot compile zlib because "{}" could '
+                                   "not be found.".format(self.zlib_dir))
             return False
 
-        logging.info(
-            'Compiling zlib with %d Make threads, and "%s" CFLAGS.', cores, cflags
-        )
+        logging.info('Compiling zlib with %d Make threads, and "%s" CFLAGS.',
+                     cores, cflags)
 
         cmd = "./configure && make -j " + str(cores)
 
@@ -190,17 +184,14 @@ class Zlib:
         decompress_times = []
 
         if not os.path.isfile(bin32_loc) or not os.path.isfile(bin64_loc):
-            text = (
-                'Cannot run zlib because neither "{}" or "{}" could not be'
-                " found.".format(bin32_loc, bin64_loc)
-            )
+            text = ('Cannot run zlib because neither "{}" or "{}" could not be'
+                    " found.".format(bin32_loc, bin64_loc))
             prettify.error_message(text)
             return {"error": text}
 
         if not os.path.isfile(corpus_file):
             text = 'Cannot run zlib because "{}" could not be found.'.format(
-                corpus_file
-            )
+                corpus_file)
             prettify.error_message(text)
             return {"error": text}
 
@@ -214,11 +205,12 @@ class Zlib:
         os.makedirs(self.results_dir, exist_ok=True)
 
         compress_warmup = "{} -1 < {} > /dev/null".format(used_bin, corpus_file)
-        compress_cmd = "{} -{} < {} > {}".format(
-            used_bin, level, corpus_file, corpus_archive
-        )
-        decompress_warmup = "{} -d < {} > /dev/null".format(used_bin, corpus_archive)
-        decompress_cmd = "{} -d < {} > /dev/null".format(used_bin, corpus_archive)
+        compress_cmd = "{} -{} < {} > {}".format(used_bin, level, corpus_file,
+                                                 corpus_archive)
+        decompress_warmup = "{} -d < {} > /dev/null".format(
+            used_bin, corpus_archive)
+        decompress_cmd = "{} -d < {} > /dev/null".format(
+            used_bin, corpus_archive)
 
         self.commands.append("Run - Warmup: " + compress_warmup)
         self.commands.append("Run: " + compress_cmd)
@@ -248,9 +240,8 @@ class Zlib:
             file.write(
                 result_file,
                 "Compress Time (Level {}):  {}\n"
-                "Decompress Time:          {}\n".format(
-                    level, compress_time, decompress_time
-                ),
+                "Decompress Time:          {}\n".format(level, compress_time,
+                                                        decompress_time),
             )
 
             compress_times.append(compress_time)
@@ -270,16 +261,15 @@ class Zlib:
         results["median"]["decompress"] = statistics.median(decompress_times)
         results["variance"] = {}
         results["variance"]["compress"] = statistics.variance(compress_times)
-        results["variance"]["decompress"] = statistics.variance(decompress_times)
+        results["variance"]["decompress"] = statistics.variance(
+            decompress_times)
         results["range"] = {}
         sorted_compress_times = sorted(compress_times)
         sorted_decompress_times = sorted(decompress_times)
-        results["range"]["compress"] = (
-            sorted_compress_times[-1] - sorted_compress_times[0]
-        )
-        results["range"]["decompress"] = (
-            sorted_decompress_times[-1] - sorted_decompress_times[0]
-        )
+        results["range"]["compress"] = (sorted_compress_times[-1] -
+                                        sorted_compress_times[0])
+        results["range"]["decompress"] = (sorted_decompress_times[-1] -
+                                          sorted_decompress_times[0])
 
         logging.info("zlib results: %s", str(results))
 

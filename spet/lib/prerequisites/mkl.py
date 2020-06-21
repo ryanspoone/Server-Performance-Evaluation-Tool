@@ -43,8 +43,7 @@ class MKL:
             prettify.error_message(
                 "Unable to find an URL for MKL. Please visit "
                 "https://software.intel.com/en-us/mkl to download MKL and "
-                "place the archive in the {} directory.".format(self.src_dir)
-            )
+                "place the archive in the {} directory.".format(self.src_dir))
             return False
 
         logging.info("Downloading MKL.")
@@ -68,8 +67,8 @@ class MKL:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract MKL because "{}" could not be found.'.format(file_path)
-            )
+                'Cannot extract MKL because "{}" could not be found.'.format(
+                    file_path))
             return False
 
         logging.info("Extracting MKL.")
@@ -94,18 +93,13 @@ class MKL:
         if not os.path.isdir(self.mkl_dir):
             prettify.error_message(
                 'Cannot install MKL because "{}" could not be found.'.format(
-                    self.mkl_dir
-                )
-            )
+                    self.mkl_dir))
             return False
 
         logging.info("Installing MKL.")
 
-        execute.output(
-            '{}/install.sh --silent "{}/provided/silent.cfg"'.format(
-                self.mkl_dir, self.src_dir
-            )
-        )
+        execute.output('{}/install.sh --silent "{}/provided/silent.cfg"'.format(
+            self.mkl_dir, self.src_dir))
 
         if os.path.isdir(self.mkl_dir):
             return True

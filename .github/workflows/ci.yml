@@ -25,9 +25,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-      - run: |
-          python3 -m pip install --upgrade pip
-          pip3 install .
-          python3 setup.py install
-      - uses: psf/black@master
+      - run: pip3 install .
       - uses: docker://github/super-linter:v2.1.0

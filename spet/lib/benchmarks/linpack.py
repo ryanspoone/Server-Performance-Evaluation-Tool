@@ -86,8 +86,7 @@ class Linpack:
 
         if not os.path.isfile(file_path):
             text = 'Cannot extract HPL because "{}" could not be ' "found.".format(
-                file_path
-            )
+                file_path)
             prettify.error_message(text)
             logging.error(text)
             return False
@@ -118,10 +117,8 @@ class Linpack:
         if cflags is None:
             cflags = "-march=native -mtune=native"
         if avx512 is True:
-            cflags += (
-                " -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
-                " -mavx512ifma -mavx512vbmi "
-            )
+            cflags += (" -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
+                       " -mavx512ifma -mavx512vbmi ")
 
         blis_dir = "{}/blis".format(self.src_dir)
         mkl_dir = "/opt/intel/mkl"
@@ -146,19 +143,15 @@ class Linpack:
             return True
 
         if not os.path.isfile(orig_make):
-            text = (
-                "Cannot edit HPL's Makefile because '{}' could "
-                "not be found.".format(orig_make)
-            )
+            text = ("Cannot edit HPL's Makefile because '{}' could "
+                    "not be found.".format(orig_make))
             prettify.error_message(text)
             logging.error(text)
             return False
 
         if not os.path.isdir(self.hpl_dir):
-            text = (
-                "Cannot edit HPL's Makefile because '{}' could "
-                "not be found.".format(self.hpl_dir)
-            )
+            text = ("Cannot edit HPL's Makefile because '{}' could "
+                    "not be found.".format(self.hpl_dir))
             prettify.error_message(text)
             logging.error(text)
             return False
@@ -173,21 +166,21 @@ class Linpack:
         file.touch(dest_make)
         shutil.copyfile(orig_make, dest_make)
 
-        file.replace_line(
-            dest_make, "ARCH         = x86_64", "ARCH         = {}".format(arch)
-        )
+        file.replace_line(dest_make, "ARCH         = x86_64",
+                          "ARCH         = {}".format(arch))
 
-        file.replace_line(
-            dest_make, "TOPdir       =", "TOPdir       = {}".format(self.hpl_dir)
-        )
+        file.replace_line(dest_make, "TOPdir       =",
+                          "TOPdir       = {}".format(self.hpl_dir))
 
-        file.replace_line(dest_make, "LAdir        =", "LAdir        = " + mathlib_path)
+        file.replace_line(dest_make, "LAdir        =",
+                          "LAdir        = " + mathlib_path)
 
         file.replace_line(
             dest_make,
             "CC           =",
             "CC           = {}"
-            "/openmpi/build/bin/mpicc {} -lgomp -fopenmp".format(self.src_dir, cflags),
+            "/openmpi/build/bin/mpicc {} -lgomp -fopenmp".format(
+                self.src_dir, cflags),
         )
 
         if os.path.isfile(dest_make):
@@ -215,10 +208,8 @@ class Linpack:
         if cflags is None:
             cflags = "-march=native -mtune=native"
         if avx512 is True:
-            cflags += (
-                " -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
-                " -mavx512ifma -mavx512vbmi "
-            )
+            cflags += (" -mavx512f -mavx512cd -mavx512bw -mavx512dq -mavx512vl"
+                       " -mavx512ifma -mavx512vbmi ")
         if "-O" not in cflags:
             cflags += " -O3 "
 
@@ -234,24 +225,21 @@ class Linpack:
 
         if not os.path.isdir(self.hpl_dir):
             text = 'Cannot compile LINPACK because "{}" could not ' "be found.".format(
-                self.hpl_dir
-            )
+                self.hpl_dir)
             prettify.error_message(text)
             logging.error(text)
             return False
 
         if not os.path.isfile(makefile):
             text = 'Cannot compile LINPACK because "{}" could not ' "be found.".format(
-                makefile
-            )
+                makefile)
             prettify.error_message(text)
             logging.error(text)
             return False
 
         if not os.path.isfile(mpicc_bin):
             text = 'Cannot compile LINPACK because "{}" could not ' "be found.".format(
-                mpicc_bin
-            )
+                mpicc_bin)
             prettify.error_message(text)
             logging.error(text)
             return False
@@ -267,10 +255,8 @@ class Linpack:
 
         # Sometimes building has an issue on the first run and doesn't build
         # but the second go-round is perfectly fine
-        build_cmd = (
-            "make -s -j {0} all arch={1} || make -s -j {0} all "
-            "arch={1}".format(cores, arch)
-        )
+        build_cmd = ("make -s -j {0} all arch={1} || make -s -j {0} all "
+                     "arch={1}".format(cores, arch))
         install_cmd = "make -s -j {} install arch={}".format(cores, arch)
 
         self.commands.append("Build: CFLAGS = " + cflags)
@@ -278,9 +264,13 @@ class Linpack:
         self.commands.append("Build: " + build_cmd)
         self.commands.append("Install: " + install_cmd)
 
-        execute.output(build_cmd, working_dir=self.hpl_dir, environment=shell_env)
+        execute.output(build_cmd,
+                       working_dir=self.hpl_dir,
+                       environment=shell_env)
 
-        execute.output(install_cmd, working_dir=self.hpl_dir, environment=shell_env)
+        execute.output(install_cmd,
+                       working_dir=self.hpl_dir,
+                       environment=shell_env)
 
         if os.path.isfile(bin_file):
             return True
@@ -476,7 +466,8 @@ class Linpack:
             return {"error": text}
 
         if not os.path.isdir(openmpi_dir):
-            text = 'Could not find OpenMPI directory at "{}".'.format(openmpi_dir)
+            text = 'Could not find OpenMPI directory at "{}".'.format(
+                openmpi_dir)
             prettify.error_message(text)
             logging.error(text)
             return {"error": text}
@@ -485,19 +476,18 @@ class Linpack:
         nb_size = self.__nb_size(threads)
 
         mpi_cmd = "{}/mpirun -n {} --allow-run-as-root --mca mpi_paffinity_alone 1".format(
-            openmpi_dir, mpi_threads
-        )
+            openmpi_dir, mpi_threads)
 
         if threads == mpi_threads:
             mpi_cmd = "{}/mpirun -n {} --allow-run-as-root".format(
-                openmpi_dir, mpi_threads
-            )
+                openmpi_dir, mpi_threads)
 
         logging.info('Running LINPACK using "%s" arch.', arch)
 
         os.makedirs(self.results_dir, exist_ok=True)
         shutil.copyfile(self.hpl_dir + "/Make." + arch, self.results_dir)
-        shutil.copyfile(self.hpl_dir + "/bin/{}/HPL.dat".format(arch), self.results_dir)
+        shutil.copyfile(self.hpl_dir + "/bin/{}/HPL.dat".format(arch),
+                        self.results_dir)
 
         cmd = mpi_cmd + " ./xhpl"
 
@@ -511,8 +501,7 @@ class Linpack:
         file.write(self.results_dir + "/linpack_output.txt", output)
 
         result = grep.text(
-            output, r"\s+{}\s+{}\s+{}\s+".format(nb_size, grid.P, grid.Q)
-        )
+            output, r"\s+{}\s+{}\s+{}\s+".format(nb_size, grid.P, grid.Q))
 
         for line in result:
             # 7th word

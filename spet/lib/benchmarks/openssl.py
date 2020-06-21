@@ -57,7 +57,8 @@ class OpenSSL:
         if os.path.isfile(archive_path):
             return True
 
-        url = "https://www.openssl.org/source/openssl-{}.tar.gz".format(self.version)
+        url = "https://www.openssl.org/source/openssl-{}.tar.gz".format(
+            self.version)
 
         logging.info("Downloading OpenSSL.")
         download.file(url, archive_path)
@@ -79,15 +80,14 @@ class OpenSSL:
 
         if not os.path.isfile(file_path):
             prettify.error_message(
-                'Cannot extract OpenSSL because "{}" could not be found.'.format(
-                    file_path
-                )
-            )
+                'Cannot extract OpenSSL because "{}" could not be found.'.
+                format(file_path))
             return False
 
         logging.info("Extracting OpenSSL.")
         extract.tar(file_path, self.src_dir)
-        os.rename("{}-{}".format(self.openssl_dir, self.version), self.openssl_dir)
+        os.rename("{}-{}".format(self.openssl_dir, self.version),
+                  self.openssl_dir)
 
         if os.path.exists(self.openssl_dir):
             return True
@@ -125,10 +125,8 @@ class OpenSSL:
 
         if not os.path.isdir(self.openssl_dir):
             prettify.error_message(
-                'Cannot compile OpenSSL because "{}" could not be found.'.format(
-                    bin_loc
-                )
-            )
+                'Cannot compile OpenSSL because "{}" could not be found.'.
+                format(bin_loc))
             return False
 
         logging.info(
@@ -141,11 +139,10 @@ class OpenSSL:
 
         os.makedirs(self.openssl_dir + "/build", exist_ok=True)
 
-        config_cmd = (
-            "./config -Wl,--rpath=/usr/local/glibc/lib "
-            "-Wl,--dynamic-linker=/usr/local/glibc/lib/ld-{0}.so "
-            "-Wl,-rpath,{1} --prefix={1}/build".format(glibc_ver, self.openssl_dir)
-        )
+        config_cmd = ("./config -Wl,--rpath=/usr/local/glibc/lib "
+                      "-Wl,--dynamic-linker=/usr/local/glibc/lib/ld-{0}.so "
+                      "-Wl,-rpath,{1} --prefix={1}/build".format(
+                          glibc_ver, self.openssl_dir))
         make_cmd = "make -s -j {}".format(cores)
         install_cmd = "make -s -j {} install".format(cores)
 
@@ -158,9 +155,9 @@ class OpenSSL:
 
         execute.output(config_cmd, self.openssl_dir, environment=shell_env)
 
-        compile_output = execute.output(
-            "make -s -j {}".format(cores), self.openssl_dir, environment=shell_env
-        )
+        compile_output = execute.output("make -s -j {}".format(cores),
+                                        self.openssl_dir,
+                                        environment=shell_env)
 
         logging.debug("Compilation warnings/errors:\n%s", compile_output)
 
@@ -182,8 +179,7 @@ class OpenSSL:
             Str: Numberical list of processor ids not including the first core.
         """
         thread_siblings_list = file.read(
-            "/sys/devices/system/cpu/cpu1/topology/thread_siblings_list"
-        )
+            "/sys/devices/system/cpu/cpu1/topology/thread_siblings_list")
         core_list = thread_siblings_list.split(",")
 
         if len(core_list) <= 1:
@@ -275,8 +271,7 @@ class OpenSSL:
         shell_env = os.environ.copy()
         if "LD_LIBRARY_PATH" in shell_env:
             shell_env["LD_LIBRARY_PATH"] = "{}:{}".format(
-                shell_env["LD_LIBRARY_PATH"], self.openssl_dir
-            )
+                shell_env["LD_LIBRARY_PATH"], self.openssl_dir)
         else:
             shell_env["LD_LIBRARY_PATH"] = self.openssl_dir
 
@@ -298,8 +293,7 @@ class OpenSSL:
             decrypt_results = []
 
             cmd_base = "taskset -c {} {} speed -multi {} -evp {}".format(
-                taskset_ids, bin_loc, multi_num, test
-            )
+                taskset_ids, bin_loc, multi_num, test)
             cmd_decrypt = cmd_base + " -decrypt"
 
             self.commands.append("Run: " + cmd_base)
@@ -309,15 +303,14 @@ class OpenSSL:
                 run_num = "run" + str(count)
 
                 encrypt_result_file = "{}/openssl_{}_encrypt_{}.txt".format(
-                    self.results_dir, test, run_num
-                )
+                    self.results_dir, test, run_num)
                 decrypt_result_file = "{}/openssl_{}_decrypt_{}.txt".format(
-                    self.results_dir, test, run_num
-                )
+                    self.results_dir, test, run_num)
                 cmd_decrypt = cmd_base + " -decrypt"
 
                 logging.debug("Encrypt command: %s", cmd_base)
-                logging.debug("LD_LIBRARY_PATH: %s", shell_env["LD_LIBRARY_PATH"])
+                logging.debug("LD_LIBRARY_PATH: %s",
+                              shell_env["LD_LIBRARY_PATH"])
 
                 optimize.prerun()
                 time.sleep(10)
@@ -326,12 +319,14 @@ class OpenSSL:
                 file.write(encrypt_result_file, encrypt_output)
 
                 logging.debug("Decrypt command: %s", cmd_base)
-                logging.debug("LD_LIBRARY_PATH: %s", shell_env["LD_LIBRARY_PATH"])
+                logging.debug("LD_LIBRARY_PATH: %s",
+                              shell_env["LD_LIBRARY_PATH"])
 
                 optimize.prerun()
                 time.sleep(10)
 
-                decrypt_output = execute.output(cmd_decrypt, environment=shell_env)
+                decrypt_output = execute.output(cmd_decrypt,
+                                                environment=shell_env)
                 file.write(decrypt_result_file, decrypt_output)
 
                 encrypt_scores = encrypt_output.rstrip().split("\n")
@@ -362,27 +357,27 @@ class OpenSSL:
 
             if encrypt_results and decrypt_results:
                 results[test]["average"] = {}
-                results[test]["average"]["encrypt"] = statistics.mean(encrypt_results)
-                results[test]["average"]["decrypt"] = statistics.mean(decrypt_results)
+                results[test]["average"]["encrypt"] = statistics.mean(
+                    encrypt_results)
+                results[test]["average"]["decrypt"] = statistics.mean(
+                    decrypt_results)
                 results[test]["median"] = {}
-                results[test]["median"]["encrypt"] = statistics.median(encrypt_results)
-                results[test]["median"]["decrypt"] = statistics.median(decrypt_results)
+                results[test]["median"]["encrypt"] = statistics.median(
+                    encrypt_results)
+                results[test]["median"]["decrypt"] = statistics.median(
+                    decrypt_results)
                 results[test]["variance"] = {}
                 results[test]["variance"]["encrypt"] = statistics.variance(
-                    encrypt_results
-                )
+                    encrypt_results)
                 results[test]["variance"]["decrypt"] = statistics.variance(
-                    decrypt_results
-                )
+                    decrypt_results)
                 results[test]["range"] = {}
                 sorted_encrypt = sorted(encrypt_results)
-                results[test]["range"]["encrypt"] = (
-                    sorted_encrypt[-1] - sorted_encrypt[0]
-                )
+                results[test]["range"]["encrypt"] = (sorted_encrypt[-1] -
+                                                     sorted_encrypt[0])
                 sorted_decrypt = sorted(decrypt_results)
-                results[test]["range"]["decrypt"] = (
-                    sorted_decrypt[-1] - sorted_decrypt[0]
-                )
+                results[test]["range"]["decrypt"] = (sorted_decrypt[-1] -
+                                                     sorted_decrypt[0])
 
         logging.info("OpenSSL results: %s", str(results))
 

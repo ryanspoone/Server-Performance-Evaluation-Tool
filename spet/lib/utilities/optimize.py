@@ -81,17 +81,15 @@ def ulimit():
         # process. This only affects the stack of the main thread in a
         # multi-threaded process.
         # `ulimit -s unlimited`
-        resource.setrlimit(
-            resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY)
-        )
+        resource.setrlimit(resource.RLIMIT_STACK,
+                           (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
         # The maximum number of open file descriptors for the current process.
         # `ulimit -n 1048576`
         resource.setrlimit(resource.RLIMIT_NOFILE, (1048576, 1048576))
         # The maximum number of user processes for the current process.
         # `ulimit -u unlimited`
-        resource.setrlimit(
-            resource.RLIMIT_NPROC, (resource.RLIM_INFINITY, resource.RLIM_INFINITY)
-        )
+        resource.setrlimit(resource.RLIMIT_NPROC,
+                           (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
         return True
     except ValueError as err:
         logging.debug(err)
