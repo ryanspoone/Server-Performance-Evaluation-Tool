@@ -27,7 +27,7 @@ def output(command, working_dir=None, environment=None):
         shell_env = os.environ.copy()
         if environment:
             shell_env.update(environment)
-        out = subprocess.check_output( # pylint: disable=E1123
+        out = subprocess.check_output(  # pylint: disable=E1123
             command,
             stderr=subprocess.STDOUT,
             cwd=working_dir,
