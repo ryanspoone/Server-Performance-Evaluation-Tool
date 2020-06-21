@@ -27,13 +27,13 @@ def output(command, working_dir=None, environment=None):
         shell_env = os.environ.copy()
         if environment:
             shell_env.update(environment)
-        out = subprocess.check_output(
+        out = subprocess.check_output( # pylint: disable=E1123
             command,
             stderr=subprocess.STDOUT,
             cwd=working_dir,
             shell=True,
             universal_newlines=True,
-            executable="/bin/bash",  # pylint: disable=E1123
+            executable="/bin/bash",
             env=shell_env,
         )
         logging.debug("%s:\n%s", command, out)

@@ -138,7 +138,8 @@ disable=print-statement,
         xreadlines-attribute,
         deprecated-sys-function,
         exception-escape,
-        comprehension-escape
+        comprehension-escape,
+        import-error
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -537,7 +538,7 @@ min-public-methods=2
 
 # List of modules that can be imported at any level, not just the top level
 # one.
-allow-any-import-level=spet,spet.lib.utilities
+allow-any-import-level=
 
 # Allow wildcard imports from modules that define __all__.
 allow-wildcard-with-all=no
