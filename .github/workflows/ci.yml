@@ -37,7 +37,6 @@ jobs:
       - name: Lint Python and Test Code Base
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install .
-          pip3 install pytest
+          pip3 install -r requirements.txt
           pylint spet
           pytest .
