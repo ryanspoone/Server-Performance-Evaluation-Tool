@@ -33,7 +33,7 @@ def output(command, working_dir=None, environment=None):
             cwd=working_dir,
             shell=True,
             universal_newlines=True,
-            executable="/bin/bash",
+            executable="/bin/bash",  # pylint: disable=E1123
             env=shell_env,
         )
         logging.debug("%s:\n%s", command, out)
