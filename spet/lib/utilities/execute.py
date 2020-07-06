@@ -94,6 +94,8 @@ def timed(command, working_dir=None, environment=None):
 def pkill(process_name):
     """Kills all processes which contain the desired name.
 
+    Deprecated. Prefer `kill` over this function.
+
     Args:
         process_name (str): The name to kill all processes with.
     """
