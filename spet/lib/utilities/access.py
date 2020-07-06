@@ -17,7 +17,7 @@ def is_root():
         Boolean: If root access or not.
     """
     try:
-        return os.getuid() == 0  # pylint: disable=I0011,E1101
+        return os.getuid() == 0
     except IOError as err:
         logging.error(err)
 
