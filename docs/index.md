@@ -5,8 +5,8 @@ transparency in x86_64 server testing.
 
 ## Contents
 
-- [Getting Started](getting_started)
-- [FAQ](faq)
-- [Advanced Configuration](advanced_configuration)
-- [Development](development)
-- [Future](future)
+- [Getting Started](getting_started.md)
+- [FAQ](faq.md)
+- [Advanced Configuration](advanced_configuration.md)
+- [Development](development.md)
+- [Future](future.md)
