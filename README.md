@@ -1,5 +1,7 @@
 # Server Performance Evaluation Tool
 
+![Lint Code Base](https://github.com/ryanspoone/Server-Performance-Evaluation-Tool/workflows/Lint%20Code%20Base/badge.svg?branch=master)
+
 Server Performance Evaluation Tool allows you to easily test the
 performance of x86_64 processors on Linux.
 
