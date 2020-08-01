@@ -16,6 +16,7 @@ from spet.lib.utilities import extract
 from spet.lib.utilities import file
 from spet.lib.utilities import optimize
 from spet.lib.utilities import prettify
+from spet.lib.utilities import
 
 
 class Zlib:
@@ -47,11 +48,14 @@ class Zlib:
 
     def create_corpus(self):
         """Create a 1GB corpus file to test zlib."""
+        logging.info("Creating corpus file.")
+        os.makedirs(self.corpus_dir, exist_ok=True)
         corpus_file_path = self.corpus_dir + "/corpus.txt"
         corpus_file = open(corpus_file_path, "wb")
         corpus_file.seek(1073741824 - 1)
         corpus_file.write(b"\0")
         corpus_file.close()
+        logging.debug("Created corpus file.")
 
     def download(self):
         """Download zlib.
