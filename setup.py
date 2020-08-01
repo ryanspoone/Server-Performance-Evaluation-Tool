@@ -30,12 +30,15 @@ setup(
     description="Server Performance Evaluation Tool",
     long_description=LONG_DESC,
     author="Ryan Spoone",
-    url="https://www.github.com/ryanspoone/spet",
+    url=
+    "https://www.github.com/ryanspoone/Server-Performance-Evaluation-Tool.git",
     install_requires=[],
     py_modules=["spet"],
     packages=["spet"],
     package_data={},
-    entry_points={"console_scripts": ["spet = spet.main:main"],},
+    entry_points={
+        "console_scripts": ["spet = spet.main:main"],
+    },
     include_package_data=True,
     license="MIT",
     keywords=[

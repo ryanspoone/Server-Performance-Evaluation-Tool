@@ -28,13 +28,17 @@ import os
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc"]
+extensions = ["sphinx.ext.autodoc", "recommonmark"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = ".rst"
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
@@ -92,7 +96,6 @@ pygments_style = "sphinx"
 
 # If true, keep warnings as "system message" paragraphs in the built documents.
 # keep_warnings = False
-
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -178,7 +181,6 @@ html_static_path = ["_static"]
 # Output file base name for HTML help builder.
 htmlhelp_basename = "ServerPerformanceEvaluationTooldoc"
 
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
@@ -193,15 +195,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (
-        "index",
-        "ServerPerformanceEvaluationTool.tex",
-        u"Server Performance Evaluation Tool Documentation",
-        u"Ryan Spoone",
-        "manual",
-    )
-]
+latex_documents = [(
+    "index",
+    "ServerPerformanceEvaluationTool.tex",
+    u"Server Performance Evaluation Tool Documentation",
+    u"Ryan Spoone",
+    "manual",
+)]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -223,41 +223,35 @@ latex_documents = [
 # If false, no module index is generated.
 # latex_domain_indices = True
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        "index",
-        "serverperformanceevaluationtool",
-        u"Server Performance Evaluation Tool Documentation",
-        [u"Ryan Spoone"],
-        1,
-    )
-]
+man_pages = [(
+    "index",
+    "serverperformanceevaluationtool",
+    u"Server Performance Evaluation Tool Documentation",
+    [u"Ryan Spoone"],
+    1,
+)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
-
 
 # -- Options for Texinfo output -------------------------------------------
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [
-    (
-        "index",
-        "ServerPerformanceEvaluationTool",
-        u"Server Performance Evaluation Tool Documentation",
-        u"Ryan Spoone",
-        "ServerPerformanceEvaluationTool",
-        "One line description of project.",
-        "Miscellaneous",
-    )
-]
+texinfo_documents = [(
+    "index",
+    "ServerPerformanceEvaluationTool",
+    u"Server Performance Evaluation Tool Documentation",
+    u"Ryan Spoone",
+    "ServerPerformanceEvaluationTool",
+    "One line description of project.",
+    "Miscellaneous",
+)]
 
 # Documents to append as an appendix to all manuals.
 # texinfo_appendices = []
