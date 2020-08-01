@@ -21,7 +21,7 @@ if sys.version_info < (3, 3):
 with open(os.path.join(os.path.dirname(__file__), "VERSION")) as VERSION:
     __version__ = VERSION.read().strip()
 
-with open("README.rst", "rb") as f:
+with open("README.md", "rb") as f:
     LONG_DESC = f.read().decode("utf-8")
 
 setup(
