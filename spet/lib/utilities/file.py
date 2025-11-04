@@ -113,8 +113,8 @@ def write(file_path, text, append=False, encoding='utf-8'):
         logging.error("Invalid file path")
         raise ValueError("File path cannot be empty")
 
-    # Prevent path traversal
-    if '..' in file_path and not os.path.isabs(file_path):
+    # Prevent path traversal (reject .. in all paths)
+    if '..' in file_path:
         logging.error("File path contains parent reference: %s", file_path)
         raise ValueError(f"Invalid file path: {file_path}")
 
