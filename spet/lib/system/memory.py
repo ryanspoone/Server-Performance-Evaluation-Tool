@@ -44,7 +44,7 @@ def total():
         Integer: RAM in GB.
     """
     try:
-        ram_gb = None
+        ram_gb = 0  # Initialize to 0, not None, to allow += operations
         ram_kb = None
 
         if shutil.which("lshw"):
