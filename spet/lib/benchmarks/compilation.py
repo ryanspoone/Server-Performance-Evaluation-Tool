@@ -191,7 +191,7 @@ class CompilationSpeed:
 
         for count in range(1, 4):
             run_num = "run" + str(count)
-            result_file = "{}/zlib_{}.txt".format(self.results_dir, run_num)
+            result_file = "{}/kernel_{}.txt".format(self.results_dir, run_num)
 
             execute.output(clean_cmd, self.kernel_dir, environment=shell_env)
 

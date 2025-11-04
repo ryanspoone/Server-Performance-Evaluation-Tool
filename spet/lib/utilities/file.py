@@ -75,6 +75,14 @@ def touch(file_path):
         logging.error("File path contains parent reference: %s", file_path)
         raise ValueError(f"Invalid file path: {file_path}")
 
+    # Block writes to critical system files
+    sensitive_files = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    path_normalized = os.path.normpath(os.path.abspath(file_path))
+    for sensitive in sensitive_files:
+        if path_normalized.startswith(sensitive):
+            logging.error("Blocked write to sensitive path: %s", file_path)
+            raise ValueError(f"Cannot write to sensitive system path: {file_path}")
+
     try:
         basedir = os.path.dirname(file_path)
         # Create directory tree if necessary
@@ -117,6 +125,14 @@ def write(file_path, text, append=False, encoding='utf-8'):
     if '..' in file_path:
         logging.error("File path contains parent reference: %s", file_path)
         raise ValueError(f"Invalid file path: {file_path}")
+
+    # Block writes to critical system files
+    sensitive_files = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    path_normalized = os.path.normpath(os.path.abspath(file_path))
+    for sensitive in sensitive_files:
+        if path_normalized.startswith(sensitive):
+            logging.error("Blocked write to sensitive path: %s", file_path)
+            raise ValueError(f"Cannot write to sensitive system path: {file_path}")
 
     if text is None:
         logging.warning("Attempting to write None to %s, converting to empty string", file_path)

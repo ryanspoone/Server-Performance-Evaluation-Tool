@@ -37,9 +37,26 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
         logging.warning("Downloading over insecure HTTP: %s", url)
 
     # Validate destination path
-    if not dest or '..' in dest:
-        logging.error("Invalid destination path: %s", dest)
+    if not dest:
+        logging.error("Invalid destination path: empty")
+        raise ValueError("Invalid destination path: empty")
+
+    # Prevent path traversal
+    if '..' in dest:
+        logging.error("Invalid destination path contains ..: %s", dest)
         raise ValueError(f"Invalid destination path: {dest}")
+
+    # Block writes to sensitive system directories
+    sensitive_dirs = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    dest_normalized = os.path.normpath(os.path.abspath(dest))
+    for sensitive in sensitive_dirs:
+        if dest_normalized.startswith(sensitive):
+            logging.error("Blocked write to sensitive path: %s", dest)
+            raise ValueError(f"Cannot write to sensitive system path: {dest}")
+
+    # Warn if using absolute path outside typical SPET directories
+    if os.path.isabs(dest) and not any(dest.startswith(d) for d in ['/tmp', '/opt', '/home', '/root', '/usr/local']):
+        logging.warning("Download to unusual absolute path: %s", dest)
 
     # Create parent directory if needed
     dest_dir = os.path.dirname(dest)

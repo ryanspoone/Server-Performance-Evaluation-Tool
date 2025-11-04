@@ -229,6 +229,10 @@ class STREAM:
             file.write(result_file, output)
 
             result = grep.text(output, "Triad")
+            if not result or len(result) == 0:
+                logging.error("Triad result not found in STREAM output")
+                return {"error": "Triad result not found in output"}
+
             result = result[0].split()[1]  # 2nd word
             result = float(result)
             results[run_num] = result
