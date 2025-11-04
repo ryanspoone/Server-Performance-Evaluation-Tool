@@ -70,13 +70,16 @@ def total():
 
         if not ram_gb and os.path.isfile("/proc/meminfo"):
             meminfo_output = grep.file("/proc/meminfo", "MemTotal")
-            ram_kb = re.sub("MemTotal:", "", meminfo_output[0])
-            ram_kb = re.sub("kB", "", ram_kb)
-            ram_kb = ram_kb.strip().split()[0]
-            # 1024/1000 seems to work instead of either
-            # a) 1000/1000
-            # b) 1024/1024
-            ram_gb = int(ram_kb) / 1024 / 1000
+            if meminfo_output and len(meminfo_output) > 0:
+                ram_kb = re.sub("MemTotal:", "", meminfo_output[0])
+                ram_kb = re.sub("kB", "", ram_kb)
+                ram_kb_parts = ram_kb.strip().split()
+                if ram_kb_parts and len(ram_kb_parts) > 0:
+                    ram_kb = ram_kb_parts[0]
+                    # 1024/1000 seems to work instead of either
+                    # a) 1000/1000
+                    # b) 1024/1024
+                    ram_gb = int(ram_kb) / 1024 / 1000
 
         return ram_gb
     except IOError as err:
@@ -117,8 +120,10 @@ def frequency():
         if not dimm_freq and shutil.which("lshw"):
             lshw_output = execute.output("lshw -short -C memory")
             dimms = grep.text(lshw_output, "DIMM")
-            if dimms:
-                dimm_freq = dimms[0].strip().split()[6]
+            if dimms and len(dimms) > 0:
+                dimm_parts = dimms[0].strip().split()
+                if len(dimm_parts) >= 7:
+                    dimm_freq = dimm_parts[6]
 
         if "." in dimm_freq:
             freq = int(float(dimm_freq))

@@ -83,19 +83,23 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = mpi.download()
     if not download_success:
         prettify.error_message("OpenMPI failed to download.")
+        sys.exit(1)
 
     extract_success = mpi.extract()
     if not extract_success:
         prettify.error_message("OpenMPI failed to extract.")
+        sys.exit(1)
 
     build_success = mpi.build(cores=system_info.cores,
                               cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("OpenMPI failed to compile.")
+        sys.exit(1)
 
     install_success = mpi.install(cores=system_info.cores)
     if not install_success:
         prettify.error_message("OpenMPI failed to install.")
+        sys.exit(1)
 
     # Math libraries
     if "intel" in system_info.processorName.lower():
@@ -104,34 +108,41 @@ def install_prerequisites(root_dir, system_info, opts):
         download_success = intel.download()
         if not download_success:
             prettify.error_message("MKL failed to download.")
+            sys.exit(1)
 
         extract_success = intel.extract()
         if not extract_success:
             prettify.error_message("MKL failed to extract.")
+            sys.exit(1)
 
         install_success = intel.install()
         if not install_success:
             prettify.error_message("MKL failed to install.")
+            sys.exit(1)
     elif "amd" in system_info.processorName.lower():
         amd = blis.BLIS(versions.blis, root_dir)
 
         download_success = amd.download()
         if not download_success:
             prettify.error_message("BLIS failed to download.")
+            sys.exit(1)
 
         extract_success = amd.extract()
         if not extract_success:
             prettify.error_message("BLIS failed to extract.")
+            sys.exit(1)
     else:
         blas = openblas.OpenBLAS(versions.openblas, root_dir)
 
         download_success = blas.download()
         if not download_success:
             prettify.error_message("OpenBLAS failed to download.")
+            sys.exit(1)
 
         extract_success = blas.extract()
         if not extract_success:
             prettify.error_message("OpenBLAS failed to extract.")
+            sys.exit(1)
 
         build_success = blas.build(
             system_info.threads,
@@ -141,6 +152,7 @@ def install_prerequisites(root_dir, system_info, opts):
         )
         if not build_success:
             prettify.error_message("OpenBLAS failed to compile.")
+            sys.exit(1)
 
     # Glibc
     libc = glibc.GLibC(versions.glibc, root_dir)
@@ -148,19 +160,23 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = libc.download()
     if not download_success:
         prettify.error_message("Glibc failed to download.")
+        sys.exit(1)
 
     extract_success = libc.extract()
     if not extract_success:
         prettify.error_message("Glibc failed to extract.")
+        sys.exit(1)
 
     build_success = libc.build(cores=system_info.cores,
                                cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("Glibc failed to compile.")
+        sys.exit(1)
 
     install_success = libc.install(cores=system_info.cores)
     if not install_success:
         prettify.error_message("Glibc failed to install.")
+        sys.exit(1)
 
     # Maven
     mvn = maven.Maven(versions.maven, root_dir)
@@ -168,10 +184,12 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = mvn.download()
     if not download_success:
         prettify.error_message("Maven failed to download.")
+        sys.exit(1)
 
     extract_success = mvn.extract()
     if not extract_success:
         prettify.error_message("Maven failed to extract.")
+        sys.exit(1)
 
     # MySQL
     sql = mysql.MySQL(versions.mysql, versions.mysql_glibc, root_dir)
@@ -179,14 +197,17 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = sql.download()
     if not download_success:
         prettify.error_message("MySQL failed to download.")
+        sys.exit(1)
 
     extract_success = sql.extract()
     if not extract_success:
         prettify.error_message("MySQL failed to extract.")
+        sys.exit(1)
 
     setup_success = sql.setup()
     if not setup_success:
         prettify.error_message("MySQL failed to setup.")
+        sys.exit(1)
 
     # Cassandra
     nosql = cassandra.Cassandra(versions.cassandra, root_dir)
@@ -194,10 +215,12 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = nosql.download()
     if not download_success:
         prettify.error_message("Cassandra failed to download.")
+        sys.exit(1)
 
     extract_success = nosql.extract()
     if not extract_success:
         prettify.error_message("Cassandra failed to extract.")
+        sys.exit(1)
 
 
 def benchmarks(root_dir, results_dir, system_info, opts):

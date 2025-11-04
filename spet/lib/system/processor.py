@@ -30,7 +30,7 @@ def name():
 
         logging.debug("/proc/cpuinfo model name: %s", str(cpu_name))
 
-        if cpu_name:
+        if cpu_name and len(cpu_name) > 0:
             cpu_name = " ".join(cpu_name[0].strip().split()[3:])
             return cpu_name
 
@@ -42,7 +42,7 @@ def name():
 
         logging.debug("lscpu model name: %s", str(cpu_name))
 
-        if not cpu_name:
+        if not cpu_name or len(cpu_name) == 0:
             return None
 
         cpu_name = " ".join(cpu_name[0].strip().split()[2:])
@@ -51,8 +51,11 @@ def name():
             return cpu_name
 
         cpu_name = grep.text(lscpu_output, "CPU:")
-        cpu_name = " ".join(cpu_name[0].strip().split()[1:])
-        return cpu_name
+        if cpu_name and len(cpu_name) > 0:
+            cpu_name = " ".join(cpu_name[0].strip().split()[1:])
+            return cpu_name
+
+        return None
     except IOError as err:
         logging.error(err)
     except ValueError as err:
@@ -85,38 +88,44 @@ def topology():
     try:
         if shutil.which("lscpu"):
             lscpu_output = execute.output("lscpu")
-            sockets = grep.text(lscpu_output, "Socket")
-            sockets = re.sub(r"Socket\(s\):\s*", "", sockets[0])
-            sockets = int(sockets.strip())
+            sockets_list = grep.text(lscpu_output, "Socket")
+            if sockets_list and len(sockets_list) > 0:
+                sockets = re.sub(r"Socket\(s\):\s*", "", sockets_list[0])
+                sockets = int(sockets.strip())
 
-            threads_per_core = grep.text(lscpu_output, r"Thread\(s\) per core:")
-            threads_per_core = re.sub(r"Thread\(s\) per core:\s*", "",
-                                      threads_per_core[0])
-            threads_per_core = int(threads_per_core.strip())
+            threads_per_core_list = grep.text(lscpu_output, r"Thread\(s\) per core:")
+            if threads_per_core_list and len(threads_per_core_list) > 0:
+                threads_per_core = re.sub(r"Thread\(s\) per core:\s*", "",
+                                          threads_per_core_list[0])
+                threads_per_core = int(threads_per_core.strip())
 
-            cores_per_processor = grep.text(lscpu_output,
+            cores_per_processor_list = grep.text(lscpu_output,
                                             r"Core\(s\) per socket:")
-            cores_per_processor = re.sub(r"Core\(s\) per socket:\s*", "",
-                                         cores_per_processor[0])
-            cores_per_processor = int(cores_per_processor.strip())
+            if cores_per_processor_list and len(cores_per_processor_list) > 0:
+                cores_per_processor = re.sub(r"Core\(s\) per socket:\s*", "",
+                                             cores_per_processor_list[0])
+                cores_per_processor = int(cores_per_processor.strip())
 
         if not sockets and shutil.which("dmidecode"):
             dmidecode_output = execute.output("dmidecode -t 4")
 
             sockets = len(grep.text(dmidecode_output, "Socket Designation"))
 
-            total_threads = grep.text(dmidecode_output, r"Thread Count\:")
-            total_threads = re.sub(r"Thread Count:", "", total_threads[0])
-            total_threads = total_threads.strip().split()[0]
-            total_threads = int(total_threads)
+            total_threads_list = grep.text(dmidecode_output, r"Thread Count\:")
+            if total_threads_list and len(total_threads_list) > 0:
+                total_threads = re.sub(r"Thread Count:", "", total_threads_list[0])
+                total_threads = total_threads.strip().split()[0]
+                total_threads = int(total_threads)
 
-            cores_per_processor = grep.text(dmidecode_output, r"Core Count\:")
-            cores_per_processor = re.sub(r"Core Count:\s*", "",
-                                         cores_per_processor[0])
-            cores_per_processor = cores_per_processor.strip().split()[0]
-            cores_per_processor = int(cores_per_processor)
+            cores_per_processor_list = grep.text(dmidecode_output, r"Core Count\:")
+            if cores_per_processor_list and len(cores_per_processor_list) > 0:
+                cores_per_processor = re.sub(r"Core Count:\s*", "",
+                                             cores_per_processor_list[0])
+                cores_per_processor = cores_per_processor.strip().split()[0]
+                cores_per_processor = int(cores_per_processor)
 
-            threads_per_core = total_threads / cores_per_processor
+            if total_threads and cores_per_processor:
+                threads_per_core = total_threads / cores_per_processor
 
         if not sockets:
             thread_siblings = (file.read(
@@ -304,20 +313,20 @@ def cache():
             lscpu_output = execute.output("lscpu")
 
             level_one_data_line = grep.text(lscpu_output, "L1d cache")
-            if level_one_data_line:
+            if level_one_data_line and len(level_one_data_line) > 0:
                 level_one_data = level_one_data_line[0].rstrip().split()[2]
 
             level_one_ins_line = grep.text(lscpu_output, "L1i cache")
-            if level_one_ins_line:
+            if level_one_ins_line and len(level_one_ins_line) > 0:
                 level_one_instruction = level_one_ins_line[0].rstrip()
                 level_one_instruction = level_one_instruction.split()[2]
 
             level_two_line = grep.text(lscpu_output, "L2 cache")
-            if level_two_line:
+            if level_two_line and len(level_two_line) > 0:
                 level_two = level_two_line[0].rstrip().split()[2]
 
             level_three_line = grep.text(lscpu_output, "L3 cache")
-            if level_three_line:
+            if level_three_line and len(level_three_line) > 0:
                 level_three = level_three_line[0].rstrip().split()[2]
 
         if not level_one_data and os.path.isfile(level_one_data_file):
@@ -361,16 +370,16 @@ def frequency():
         if shutil.which("dmidecode"):
             dmidecode_output = execute.output("dmidecode -t processor")
             dmidecode_output = grep.text(dmidecode_output, "Max Speed")
-            if dmidecode_output:
+            if dmidecode_output and len(dmidecode_output) > 0:
                 mhz_freq = dmidecode_output[0].strip().split()[2]
         elif shutil.which("lscpu"):
             lscpu_output = execute.output("lscpu")
             lscpu_output = grep.text(lscpu_output, "CPU max MHz:")
-            if lscpu_output:
+            if lscpu_output and len(lscpu_output) > 0:
                 mhz_freq = lscpu_output[0].strip().split()[3]
         elif os.path.isfile("/proc/cpuinfo"):
             cpuinfo_output = grep.file("/proc/cpuinfo", "cpu MHz")
-            if cpuinfo_output:
+            if cpuinfo_output and len(cpuinfo_output) > 0:
                 mhz_freq = cpuinfo_output[0].strip().split()[3]
 
         if "." in mhz_freq:
