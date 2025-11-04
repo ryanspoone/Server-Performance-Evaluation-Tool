@@ -560,13 +560,32 @@ def main():
     print("\n")
 
 
-def keyboard_interrupt_handler():
-    """Allow CTRL+C interrupts to exit gracefully."""
+def signal_handler(signum, frame):
+    """Handle interrupt signals gracefully with cleanup.
 
-    print("KeyboardInterrupt has been caught. Exiting now...")
-    sys.exit(0)
+    Args:
+        signum (int): The signal number.
+        frame: The current stack frame.
+    """
+    signal_names = {
+        signal.SIGINT: "SIGINT (Ctrl+C)",
+        signal.SIGTERM: "SIGTERM",
+        signal.SIGHUP: "SIGHUP"
+    }
+    signal_name = signal_names.get(signum, f"signal {signum}")
+
+    print(f"\n{signal_name} received. Cleaning up and exiting...")
+    logging.warning("%s received, initiating cleanup", signal_name)
+
+    # Cleanup is handled automatically by atexit handler in optimize module
+    # Just exit with non-zero code to indicate abnormal termination
+    sys.exit(1)
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, keyboard_interrupt_handler)
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGHUP, signal_handler)
+
     sys.exit(main())
