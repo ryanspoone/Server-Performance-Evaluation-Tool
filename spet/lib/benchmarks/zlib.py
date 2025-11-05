@@ -16,7 +16,6 @@ from spet.lib.utilities import extract
 from spet.lib.utilities import file
 from spet.lib.utilities import optimize
 from spet.lib.utilities import prettify
-from spet.lib.utilities import
 
 
 class Zlib:

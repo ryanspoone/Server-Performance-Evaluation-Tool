@@ -237,6 +237,8 @@ class LMbench:
 
         l1_latency = self.__closest_cache_latency(
             float(l1_cache) / 1024.0 / 1024.0, output)
+        l2_latency = None
+        l3_latency = None
 
         if l2_cache:
             l2_latency = self.__closest_cache_latency(

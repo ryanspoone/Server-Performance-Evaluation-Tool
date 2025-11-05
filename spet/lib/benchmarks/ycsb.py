@@ -138,7 +138,8 @@ class NoSQL:
         if os.path.isfile("/tmp/cassandra.pid"):
             pid = file.read("/tmp/cassandra.pid").strip()
 
-        if not pid or not os.path.dirname("/proc/" + pid):
+        # Verify Cassandra process is actually running
+        if not pid or not os.path.exists("/proc/{}".format(pid)):
             text = "Cassandra failed to start."
             prettify.error_message(text)
             return False
@@ -215,7 +216,8 @@ class NoSQL:
         if os.path.isfile("/tmp/cassandra.pid"):
             pid = file.read("/tmp/cassandra.pid").strip()
 
-        if not pid or not os.path.dirname("/proc/" + pid):
+        # Verify Cassandra process is actually running
+        if not pid or not os.path.exists("/proc/{}".format(pid)):
             text = "Cassandra failed to start."
             prettify.error_message(text)
             return {"error": text}

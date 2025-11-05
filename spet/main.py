@@ -83,19 +83,23 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = mpi.download()
     if not download_success:
         prettify.error_message("OpenMPI failed to download.")
+        sys.exit(1)
 
     extract_success = mpi.extract()
     if not extract_success:
         prettify.error_message("OpenMPI failed to extract.")
+        sys.exit(1)
 
     build_success = mpi.build(cores=system_info.cores,
                               cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("OpenMPI failed to compile.")
+        sys.exit(1)
 
     install_success = mpi.install(cores=system_info.cores)
     if not install_success:
         prettify.error_message("OpenMPI failed to install.")
+        sys.exit(1)
 
     # Math libraries
     if "intel" in system_info.processorName.lower():
@@ -104,34 +108,41 @@ def install_prerequisites(root_dir, system_info, opts):
         download_success = intel.download()
         if not download_success:
             prettify.error_message("MKL failed to download.")
+            sys.exit(1)
 
         extract_success = intel.extract()
         if not extract_success:
             prettify.error_message("MKL failed to extract.")
+            sys.exit(1)
 
         install_success = intel.install()
         if not install_success:
             prettify.error_message("MKL failed to install.")
+            sys.exit(1)
     elif "amd" in system_info.processorName.lower():
         amd = blis.BLIS(versions.blis, root_dir)
 
         download_success = amd.download()
         if not download_success:
             prettify.error_message("BLIS failed to download.")
+            sys.exit(1)
 
         extract_success = amd.extract()
         if not extract_success:
             prettify.error_message("BLIS failed to extract.")
+            sys.exit(1)
     else:
         blas = openblas.OpenBLAS(versions.openblas, root_dir)
 
         download_success = blas.download()
         if not download_success:
             prettify.error_message("OpenBLAS failed to download.")
+            sys.exit(1)
 
         extract_success = blas.extract()
         if not extract_success:
             prettify.error_message("OpenBLAS failed to extract.")
+            sys.exit(1)
 
         build_success = blas.build(
             system_info.threads,
@@ -141,6 +152,7 @@ def install_prerequisites(root_dir, system_info, opts):
         )
         if not build_success:
             prettify.error_message("OpenBLAS failed to compile.")
+            sys.exit(1)
 
     # Glibc
     libc = glibc.GLibC(versions.glibc, root_dir)
@@ -148,19 +160,23 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = libc.download()
     if not download_success:
         prettify.error_message("Glibc failed to download.")
+        sys.exit(1)
 
     extract_success = libc.extract()
     if not extract_success:
         prettify.error_message("Glibc failed to extract.")
+        sys.exit(1)
 
     build_success = libc.build(cores=system_info.cores,
                                cflags=system_info.cflags)
     if not build_success:
         prettify.error_message("Glibc failed to compile.")
+        sys.exit(1)
 
     install_success = libc.install(cores=system_info.cores)
     if not install_success:
         prettify.error_message("Glibc failed to install.")
+        sys.exit(1)
 
     # Maven
     mvn = maven.Maven(versions.maven, root_dir)
@@ -168,10 +184,12 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = mvn.download()
     if not download_success:
         prettify.error_message("Maven failed to download.")
+        sys.exit(1)
 
     extract_success = mvn.extract()
     if not extract_success:
         prettify.error_message("Maven failed to extract.")
+        sys.exit(1)
 
     # MySQL
     sql = mysql.MySQL(versions.mysql, versions.mysql_glibc, root_dir)
@@ -179,14 +197,17 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = sql.download()
     if not download_success:
         prettify.error_message("MySQL failed to download.")
+        sys.exit(1)
 
     extract_success = sql.extract()
     if not extract_success:
         prettify.error_message("MySQL failed to extract.")
+        sys.exit(1)
 
     setup_success = sql.setup()
     if not setup_success:
         prettify.error_message("MySQL failed to setup.")
+        sys.exit(1)
 
     # Cassandra
     nosql = cassandra.Cassandra(versions.cassandra, root_dir)
@@ -194,10 +215,12 @@ def install_prerequisites(root_dir, system_info, opts):
     download_success = nosql.download()
     if not download_success:
         prettify.error_message("Cassandra failed to download.")
+        sys.exit(1)
 
     extract_success = nosql.extract()
     if not extract_success:
         prettify.error_message("Cassandra failed to extract.")
+        sys.exit(1)
 
 
 def benchmarks(root_dir, results_dir, system_info, opts):
@@ -440,16 +463,15 @@ def main():
     run_num.write(run_file)
     nrun = run_num.read(run_file)
 
-    results_file_starter = "SPET.{}.{}".format(nrun,
-                                               uglify.filename(processor_name))
+    results_file_starter = f"SPET.{nrun}.{uglify.filename(processor_name)}"
 
-    run_dir = "{}/{}".format(results_dir, results_file_starter)
+    run_dir = f"{results_dir}/{results_file_starter}"
 
     # SPET result files
-    results_json = "{}/{}.results.json".format(run_dir, results_file_starter)
-    results_file = "{}/{}.results.txt".format(run_dir, results_file_starter)
-    debug_file = "{}/{}.debug.log".format(run_dir, results_file_starter)
-    log_file = "{}/{}.log".format(run_dir, results_file_starter)
+    results_json = f"{run_dir}/{results_file_starter}.results.json"
+    results_file = f"{run_dir}/{results_file_starter}.results.txt"
+    debug_file = f"{run_dir}/{results_file_starter}.debug.log"
+    log_file = f"{run_dir}/{results_file_starter}.log"
 
     os.makedirs(run_dir, exist_ok=True)
 
@@ -522,6 +544,59 @@ def main():
     logging.warning("\n")
     logging.warning(system.table(system_info, avx512=opts.avx512))
 
+    # Dry-run mode: show what would be done without actually doing it
+    if opts.dry_run:
+        logging.warning("\n%s", "=" * 79)
+        logging.warning("DRY RUN MODE - No actual changes will be made")
+        logging.warning("%s\n", "=" * 79)
+
+        logging.warning("Would perform system optimizations:")
+        logging.warning("  - Set CPU governor to 'performance'")
+        logging.warning("  - Disable transparent hugepages")
+        logging.warning("  - Disable swap")
+        logging.warning("  - Increase ulimits")
+        logging.warning(
+            "  - Modify /etc/security/limits.conf and /etc/sysctl.conf")
+
+        logging.warning("\nWould install and compile prerequisites:")
+        logging.warning("  - OpenMPI %s", versions.openmpi)
+        if "intel" in system_info.processorName.lower():
+            logging.warning("  - Intel MKL %s", versions.mkl)
+        elif "amd" in system_info.processorName.lower():
+            logging.warning("  - AMD BLIS %s", versions.blis)
+        else:
+            logging.warning("  - OpenBLAS %s", versions.openblas)
+        logging.warning("  - glibc %s", versions.glibc)
+        logging.warning("  - Maven %s", versions.maven)
+        logging.warning("  - MySQL %s", versions.mysql)
+        logging.warning("  - Cassandra %s", versions.cassandra)
+
+        logging.warning("\nWould run benchmarks:")
+        benchmarks_to_run = [
+            ("lmbench", "Cache Latency"),
+            ("mlc", "Memory Latency"),
+            ("openssl", "Cryptography"),
+            ("compilation", "Kernel Compilation"),
+            ("zlib", "Compression"),
+            ("linpack", "Floating-point"),
+            ("stream", "Memory Bandwidth"),
+            ("nosql", "Database NoSQL (Cassandra)"),
+            ("sql", "Database SQL (MySQL)"),
+            ("docker", "Container Performance"),
+        ]
+        for bench_name, bench_desc in benchmarks_to_run:
+            if opts.excludes and bench_name in opts.excludes:
+                logging.warning("  - %s: EXCLUDED", bench_desc)
+            else:
+                logging.warning("  - %s: WOULD RUN", bench_desc)
+
+        logging.warning("\nResults would be saved to:")
+        logging.warning("  - %s", results_json)
+        logging.warning("  - %s", results_file)
+        logging.warning(
+            "\nDry run complete. No changes were made to the system.")
+        return 0
+
     # Optimizations
     optimize.performance_governor()
     optimize.disable_hugepages()
@@ -559,14 +634,35 @@ def main():
     print(debug_file)
     print("\n")
 
+    return 0
 
-def keyboard_interrupt_handler():
-    """Allow CTRL+C interrupts to exit gracefully."""
 
-    print("KeyboardInterrupt has been caught. Exiting now...")
-    sys.exit(0)
+def signal_handler(signum, _frame):
+    """Handle interrupt signals gracefully with cleanup.
+
+    Args:
+        signum (int): The signal number.
+        _frame: The current stack frame (unused).
+    """
+    signal_names = {
+        signal.SIGINT: "SIGINT (Ctrl+C)",
+        signal.SIGTERM: "SIGTERM",
+        signal.SIGHUP: "SIGHUP"
+    }
+    signal_name = signal_names.get(signum, f"signal {signum}")
+
+    print(f"\n{signal_name} received. Cleaning up and exiting...")
+    logging.warning("%s received, initiating cleanup", signal_name)
+
+    # Cleanup is handled automatically by atexit handler in optimize module
+    # Just exit with non-zero code to indicate abnormal termination
+    sys.exit(1)
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, keyboard_interrupt_handler)
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    signal.signal(signal.SIGHUP, signal_handler)
+
     sys.exit(main())

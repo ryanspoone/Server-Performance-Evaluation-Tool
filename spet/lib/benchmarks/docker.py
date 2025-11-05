@@ -18,6 +18,7 @@ from spet.lib.utilities import file
 from spet.lib.utilities import grep
 from spet.lib.utilities import optimize
 from spet.lib.utilities import prettify
+from spet.lib.utilities import secure_temp
 
 
 class Docker:
@@ -35,7 +36,7 @@ class Docker:
         version (str): Version number for Docker.
         src_dir (str): The source directory for installing packages.
         docker_dir (str): The source directory for the Docker.
-        docker_dir (str): The data directory for the Docker.
+        data_dir (str): The data directory for the Docker.
         results_dir (str): The results directory for the Docker results.
         commands (list): All major commands run for Docker.
     """
@@ -47,6 +48,7 @@ class Docker:
         self.data_dir = self.docker_dir + "/data"
         self.results_dir = results_dir + "/docker"
         self.commands = []
+        self.daemon_process = None
 
     def download(self):
         """Download Docker.
@@ -63,10 +65,14 @@ class Docker:
         url = "https://download.docker.com/linux/static/stable/x86_64/" + archive_name
 
         logging.info("Downloading Docker Community Edition.")
-        download.file(url, archive_path)
+        try:
+            download.file(url, archive_path)
+            if os.path.isfile(archive_path):
+                return True
+        except Exception as e:
+            logging.error("Failed to download Docker: %s", e)
+            return False
 
-        if os.path.isfile(archive_path):
-            return True
         return False
 
     def extract(self):
@@ -81,6 +87,9 @@ class Docker:
             return True
 
         if not os.path.isfile(file_path):
+            logging.error(
+                'Cannot extract Docker because "%s" could not be found.',
+                file_path)
             prettify.error_message(
                 'Cannot extract Docker because "{}" could not be found.'.format(
                     file_path))
@@ -88,11 +97,17 @@ class Docker:
 
         logging.info("Extracting Docker.")
 
-        extract.tar(file_path, self.src_dir)
-        # No rename necessary
+        try:
+            extract.tar(file_path, self.src_dir)
+            # No rename necessary
 
-        if os.path.isdir(self.docker_dir):
-            return True
+            if os.path.isdir(self.docker_dir):
+                return True
+        except Exception as e:
+            logging.error("Failed to extract Docker: %s", e)
+            prettify.error_message(f"Failed to extract Docker: {e}")
+            return False
+
         return False
 
     def __image_built(self, name, env=None):
@@ -113,14 +128,96 @@ class Docker:
             env["PATH"] = self.docker_dir + ":" + env["PATH"]
 
         logging.debug("Checking if Docker image is built.")
-        image_output = execute.output("docker images",
-                                      working_dir=self.docker_dir,
-                                      environment=env)
-        found_images = grep.text(image_output, name)
+        try:
+            image_output = execute.output(["docker", "images"],
+                                          working_dir=self.docker_dir,
+                                          environment=env)
+            found_images = grep.text(image_output, name)
 
-        if found_images:
-            return True
+            if found_images:
+                return True
+        except Exception as e:
+            logging.error("Failed to check Docker images: %s", e)
+
         return False
+
+    def _start_docker_daemon(self, pid_file_path, shell_env):
+        """Start Docker daemon with secure PID file.
+
+        Args:
+            pid_file_path (str): Path to PID file.
+            shell_env (dict): Environment variables.
+
+        Returns:
+            subprocess.Popen: The daemon process, or None on failure.
+        """
+        dockerd_path = os.path.join(self.docker_dir, "dockerd")
+
+        if not os.path.isfile(dockerd_path):
+            logging.error("dockerd not found at %s", dockerd_path)
+            return None
+
+        # Start Docker daemon without shell=True
+        logging.debug("Starting Docker daemon.")
+        try:
+            proc = subprocess.Popen(
+                [
+                    dockerd_path, "--pidfile", pid_file_path, "--data-root",
+                    self.data_dir
+                ],
+                cwd=self.docker_dir,
+                env=shell_env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            # Give daemon time to start
+            time.sleep(20)
+
+            # Verify daemon started
+            if proc.poll() is not None:
+                logging.error("Docker daemon failed to start (exit code %d)",
+                              proc.returncode)
+                return None
+
+            logging.info("Docker daemon started successfully")
+            return proc
+        except Exception as e:
+            logging.error("Failed to start Docker daemon: %s", e)
+            return None
+
+    def _stop_docker_daemon(self, pid_file_path, daemon_process=None):
+        """Stop Docker daemon safely.
+
+        Args:
+            pid_file_path (str): Path to PID file.
+            daemon_process (subprocess.Popen, optional): The daemon process object.
+        """
+        logging.debug("Stopping Docker daemon.")
+
+        # Try to read PID from file
+        if os.path.exists(pid_file_path):
+            try:
+                pid = file.read(pid_file_path).strip()
+                if pid:
+                    execute.kill(pid, signal_num=15)  # SIGTERM
+                    time.sleep(2)
+                    # If still running, force kill
+                    execute.kill(pid, signal_num=9)  # SIGKILL
+            except Exception as e:
+                logging.warning("Failed to kill daemon via PID file: %s", e)
+
+        # Also try terminate via process object
+        if daemon_process and daemon_process.poll() is None:
+            try:
+                daemon_process.terminate()
+                daemon_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                daemon_process.kill()
+                daemon_process.wait()
+            except Exception as e:
+                logging.warning("Failed to terminate daemon process: %s", e)
+
+        time.sleep(5)
 
     def build(self, linux_ver, cores=None, cflags=None):
         """Builds the image for Docker to compile the Linux kernel.
@@ -140,8 +237,20 @@ class Docker:
         if "-O" not in cflags:
             cflags += " -O3 "
 
+        # Validate inputs
+        try:
+            cores = int(cores)
+            if cores < 1:
+                cores = 1
+        except (ValueError, TypeError):
+            logging.error("Invalid cores value: %s", cores)
+            return False
+
+        if not isinstance(linux_ver, str) or not linux_ver:
+            logging.error("Invalid Linux version: %s", linux_ver)
+            return False
+
         built = False
-        pid_file = "/tmp/docker.pid"
         build_name = "compile_kernel"
         dockerfile = self.docker_dir + "/Dockerfile"
 
@@ -152,14 +261,6 @@ class Docker:
         major_version = linux_ver.split(".")[0]
         url = ("http://www.kernel.org/pub/linux/kernel/v{}.x/"
                "linux-{}.tar.gz").format(major_version, linux_ver)
-        build_cmd = (
-            'docker build --build-arg cores={} --build-arg cflags="{}" '
-            "--ulimit nofile=1048576:1048576 --build-arg url={} "
-            "--build-arg version={} -t {} {}".format(cores, cflags, url,
-                                                     linux_ver, build_name,
-                                                     self.docker_dir))
-
-        self.commands.append("Build: " + build_cmd)
 
         if not os.path.isfile(self.docker_dir + "/dockerd"):
             prettify.error_message("Cannot build. Docker directory not found.")
@@ -167,44 +268,68 @@ class Docker:
 
         os.makedirs(self.data_dir, exist_ok=True)
 
-        # Start Docker daemon
-        logging.debug("Starting Docker daemon.")
-        subprocess.Popen(
-            "{}/dockerd --pidfile {} --data-root {} &".format(
-                self.docker_dir, pid_file, self.data_dir),
-            cwd=self.docker_dir,
-            shell=True,
-            env=shell_env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        time.sleep(20)
+        # Use secure temporary PID file
+        with secure_temp.SecurePidFile(prefix="docker_",
+                                       suffix=".pid") as pid_file:
+            # Start Docker daemon
+            daemon_proc = self._start_docker_daemon(pid_file.name, shell_env)
+            if not daemon_proc:
+                prettify.error_message("Failed to start Docker daemon.")
+                return False
 
-        # Make sure Docker has enough IPs available to assign to containers
-        if shutil.which("ifconfig"):
-            execute.output(
-                "ifconfig docker0 down && ifconfig docker0 172.17.0.1/16 up")
+            self.daemon_process = daemon_proc
 
-        if not os.path.isfile(dockerfile):
-            shutil.copyfile(self.src_dir + "/provided/Dockerfile", dockerfile)
+            try:
+                # Make sure Docker has enough IPs available to assign to containers
+                if shutil.which("ifconfig"):
+                    try:
+                        execute.output(["ifconfig", "docker0", "down"])
+                        execute.output(
+                            ["ifconfig", "docker0", "172.17.0.1/16", "up"])
+                    except Exception as e:
+                        logging.warning(
+                            "Failed to configure docker0 interface: %s", e)
 
-        if not self.__image_built(build_name, env=shell_env):
-            build_output = execute.output(build_cmd,
-                                          working_dir=self.docker_dir,
-                                          environment=shell_env)
-            logging.debug(build_output)
+                if not os.path.isfile(dockerfile):
+                    shutil.copyfile(self.src_dir + "/provided/Dockerfile",
+                                    dockerfile)
 
-        if self.__image_built(build_name, env=shell_env):
-            logging.info("Docker image built.")
-            built = True
+                if not self.__image_built(build_name, env=shell_env):
+                    # Build Docker image using list-based command
+                    build_cmd = [
+                        "docker", "build", "--build-arg", f"cores={cores}",
+                        "--build-arg", f"cflags={cflags}", "--ulimit",
+                        "nofile=1048576:1048576", "--build-arg", f"url={url}",
+                        "--build-arg", f"version={linux_ver}", "-t", build_name,
+                        self.docker_dir
+                    ]
 
-        # Stop Docker daemon
-        if os.path.exists(pid_file):
-            logging.debug("Stopping Docker daemon.")
-            pid = file.read(pid_file).strip()
-            execute.kill(pid)
-            execute.kill(pid)
-            time.sleep(5)
+                    build_cmd_str = " ".join(build_cmd)
+                    self.commands.append("Build: " + build_cmd_str)
+
+                    logging.info("Building Docker image...")
+                    try:
+                        build_output = execute.output(
+                            build_cmd,
+                            working_dir=self.docker_dir,
+                            environment=shell_env,
+                            timeout=3600  # 1 hour timeout for build
+                        )
+                        logging.debug(build_output)
+                    except Exception as e:
+                        logging.error("Docker build failed: %s", e)
+                        prettify.error_message(f"Docker build failed: {e}")
+
+                if self.__image_built(build_name, env=shell_env):
+                    logging.info("Docker image built.")
+                    built = True
+                else:
+                    logging.error("Docker image not found after build")
+
+            finally:
+                # Stop Docker daemon
+                self._stop_docker_daemon(pid_file.name, daemon_proc)
+                self.daemon_process = None
 
         return built
 
@@ -232,11 +357,20 @@ class Docker:
             cflags = "-march=native -mtune=native"
         if "-O" not in cflags:
             cflags += " -O3 "
+
+        # Validate inputs
+        try:
+            cores = int(cores)
+            if cores < 1:
+                cores = 1
+        except (ValueError, TypeError):
+            logging.error("Invalid cores value: %s", cores)
+            return {"error": "Invalid cores value"}
+
         shell_env = os.environ.copy()
         shell_env["CFLAGS"] = cflags
         shell_env["PATH"] = self.docker_dir + ":" + shell_env["PATH"]
 
-        pid_file = "/tmp/docker.pid"
         build_name = "compile_kernel"
         result_file = self.results_dir + "/times.txt"
         results = {"unit": "s"}
@@ -248,127 +382,150 @@ class Docker:
                         self.results_dir + "/Dockerfile")
 
         if not os.path.isfile(self.docker_dir + "/dockerd"):
-            message = "Cannot build. Docker directory not found."
+            message = "Cannot run. Docker directory not found."
             prettify.error_message(message)
             return {"error": message}
 
-        # Start Docker daemon
-        subprocess.Popen(
-            "{}/dockerd --pidfile {} --data-root {} &".format(
-                self.docker_dir, pid_file, self.data_dir),
-            cwd=self.docker_dir,
-            shell=True,
-            env=shell_env,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        logging.info("Docker daemon is running.")
-        time.sleep(20)
+        # Use secure temporary PID file
+        with secure_temp.SecurePidFile(prefix="docker_",
+                                       suffix=".pid") as pid_file:
+            # Start Docker daemon
+            daemon_proc = self._start_docker_daemon(pid_file.name, shell_env)
+            if not daemon_proc:
+                return {"error": "Failed to start Docker daemon"}
 
-        if not self.__image_built(build_name, env=shell_env):
-            if os.path.exists(pid_file):
-                pid = file.read(pid_file).strip()
-                execute.kill(pid)
-            message = "Cannot build. Docker image not found."
-            prettify.error_message(message)
-            return {"error": message}
+            self.daemon_process = daemon_proc
 
-        logging.info("Docker is about to run.")
-
-        # Remove all previously ran containers
-        try:
-            containers = execute.output(
-                "{}/docker ps -a -q".format(self.docker_dir),
-                working_dir=self.docker_dir,
-                environment=shell_env,
-            )
-            if containers:
-                execute.output(
-                    "{0}/docker rm $({0}/docker ps -a -q)".format(
-                        self.docker_dir),
-                    working_dir=self.docker_dir,
-                    environment=shell_env,
-                )
-        except subprocess.SubprocessError as err:
-            logging.debug(err)
-
-        optimize.prerun()
-        time.sleep(10)
-
-        for count in range(0, 100):
-            test_name = build_name + "_test{}".format(count)
-            # Note: We avoid using `-i -t` because it causes TTY issues
-            #       with SSH connections.
-            run_command = ("{}/docker run --ulimit nofile=1048576:1048576 "
-                           '-e "cores={}" -e "cflags={}" --name {} {}'.format(
-                               self.docker_dir, cores, cflags, test_name,
-                               build_name))
-            if count == 0:
-                self.commands.append("Run: " + run_command)
-
-            proc = subprocess.Popen(
-                run_command,
-                shell=True,
-                cwd=self.docker_dir,
-                env=shell_env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-            )
-            procs.append(proc)
-
-        for proc in procs:
-            stdout = proc.communicate()[0]
-            if isinstance(stdout, bytes):
-                stdout = stdout.decode()
-            stdout = stdout.strip()
             try:
-                stdout = float(stdout)
-                file.write(result_file, "{}\n".format(stdout), append=True)
-                times.append(stdout)
-            except ValueError:
-                logging.debug("Container failed to finish.")
-                logging.debug(stdout)
+                if not self.__image_built(build_name, env=shell_env):
+                    message = "Cannot run. Docker image not found."
+                    prettify.error_message(message)
+                    return {"error": message}
 
-        # Remove all previously ran containers
-        try:
-            containers = execute.output(
-                "{}/docker ps -a -q".format(self.docker_dir),
-                working_dir=self.docker_dir,
-                environment=shell_env,
-            )
-            if containers:
-                execute.output(
-                    "{0}/docker stop $({0}/docker ps -a -q)".format(
-                        self.docker_dir),
-                    working_dir=self.docker_dir,
-                    environment=shell_env,
-                )
-                execute.output(
-                    "{0}/docker rm $({0}/docker ps -a -q)".format(
-                        self.docker_dir),
-                    working_dir=self.docker_dir,
-                    environment=shell_env,
-                )
-        except subprocess.SubprocessError as err:
-            logging.debug(err)
+                logging.info("Docker is about to run.")
 
-        # Stop Docker daemon
-        if os.path.exists(pid_file):
-            logging.info("Docker daemon is turning off.")
-            pid = file.read(pid_file).strip()
-            execute.kill(pid)
-            execute.kill(pid)
-            time.sleep(5)
+                # Remove all previously ran containers
+                self._cleanup_containers(shell_env)
 
-        if times:
-            results["times"] = times
-            results["median"] = statistics.median(times)
-            results["average"] = statistics.mean(times)
-            results["variance"] = statistics.variance(times)
-            sorted_times = sorted(times)
-            results["range"] = sorted_times[-1] - sorted_times[0]
-        else:
-            results["error"] = "No container times available."
+                optimize.prerun()
+                time.sleep(10)
+
+                for count in range(0, 100):
+                    test_name = build_name + "_test{}".format(count)
+
+                    # Use list-based command for docker run
+                    run_cmd = [
+                        os.path.join(self.docker_dir,
+                                     "docker"), "run", "--ulimit",
+                        "nofile=1048576:1048576", "-e", f"cores={cores}", "-e",
+                        f"cflags={cflags}", "--name", test_name, build_name
+                    ]
+
+                    if count == 0:
+                        self.commands.append("Run: " + " ".join(run_cmd))
+
+                    try:
+                        proc = subprocess.Popen(
+                            run_cmd,
+                            cwd=self.docker_dir,
+                            env=shell_env,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
+                            universal_newlines=True,
+                        )
+                        procs.append(proc)
+                    except Exception as e:
+                        logging.error("Failed to start container %s: %s",
+                                      test_name, e)
+
+                # Wait for all containers to finish
+                for proc in procs:
+                    try:
+                        stdout, _ = proc.communicate(
+                            timeout=3600)  # 1 hour timeout per container
+                        if isinstance(stdout, bytes):
+                            stdout = stdout.decode()
+                        stdout = stdout.strip()
+                        try:
+                            time_value = float(stdout)
+                            file.write(result_file,
+                                       "{}\n".format(time_value),
+                                       append=True)
+                            times.append(time_value)
+                        except ValueError:
+                            logging.debug(
+                                "Container failed to finish or returned invalid output."
+                            )
+                            logging.debug(stdout)
+                    except subprocess.TimeoutExpired:
+                        logging.error("Container timed out")
+                        proc.kill()
+                    except Exception as e:
+                        logging.error("Error communicating with container: %s",
+                                      e)
+
+                # Remove all containers
+                self._cleanup_containers(shell_env)
+
+                if times:
+                    results["times"] = times
+                    results["median"] = statistics.median(times)
+                    results["average"] = statistics.mean(times)
+                    if len(times) > 1:
+                        results["variance"] = statistics.variance(times)
+                    else:
+                        results["variance"] = 0
+                    sorted_times = sorted(times)
+                    results["range"] = sorted_times[-1] - sorted_times[
+                        0] if len(sorted_times) > 1 else 0
+                else:
+                    results["error"] = "No container times available."
+
+            finally:
+                # Stop Docker daemon
+                self._stop_docker_daemon(pid_file.name, daemon_proc)
+                self.daemon_process = None
 
         return results
+
+    def _cleanup_containers(self, shell_env):
+        """Remove all Docker containers.
+
+        Args:
+            shell_env (dict): Environment variables.
+        """
+        docker_bin = os.path.join(self.docker_dir, "docker")
+
+        try:
+            # Get list of all containers
+            containers = execute.output(
+                [docker_bin, "ps", "-a", "-q"],
+                working_dir=self.docker_dir,
+                environment=shell_env,
+            )
+
+            if containers and containers.strip():
+                container_ids = containers.strip().split("\n")
+
+                # Stop containers
+                try:
+                    stop_cmd = [docker_bin, "stop"] + container_ids
+                    execute.output(stop_cmd,
+                                   working_dir=self.docker_dir,
+                                   environment=shell_env,
+                                   timeout=300)
+                except Exception as e:
+                    logging.warning("Failed to stop containers: %s", e)
+
+                # Remove containers
+                try:
+                    rm_cmd = [docker_bin, "rm"] + container_ids
+                    execute.output(rm_cmd,
+                                   working_dir=self.docker_dir,
+                                   environment=shell_env,
+                                   timeout=300)
+                except Exception as e:
+                    logging.warning("Failed to remove containers: %s", e)
+
+        except Exception as e:
+            logging.warning("Failed to cleanup containers: %s", e)

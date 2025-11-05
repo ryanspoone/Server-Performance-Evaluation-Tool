@@ -75,9 +75,12 @@ def architecture():
         if shutil.which("lscpu"):
             lscpu_output = execute.output("lscpu")
             arch = grep.text(lscpu_output, "Architecture:")
-            arch = re.sub(first_pattern, "", arch[0])
-            arch = re.sub(second_pattern, "", arch)
-            arch = re.sub(third_pattern, "32", arch)
+            if arch and len(arch) > 0:
+                arch = re.sub(first_pattern, "", arch[0])
+                arch = re.sub(second_pattern, "", arch)
+                arch = re.sub(third_pattern, "32", arch)
+            else:
+                arch = None
 
         if not arch:
             arch = machine_type

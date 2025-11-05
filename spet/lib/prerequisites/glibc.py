@@ -121,11 +121,11 @@ class GLibC:
         os.makedirs(build_dir, exist_ok=True)
 
         execute.output(
-            "spet.lib./configure --prefix=/usr/local/glibc",
+            ["./configure", "--prefix=/usr/local/glibc"],
             build_dir,
             environment=shell_env,
         )
-        execute.output("make -j " + str(cores),
+        execute.output(["make", "-j", str(cores)],
                        build_dir,
                        environment=shell_env)
 
