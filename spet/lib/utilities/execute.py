@@ -49,8 +49,9 @@ def output(command, working_dir=None, environment=None, timeout=600):
 
             if needs_shell:
                 # For commands that genuinely need shell, log warning
-                logging.warning("Command uses shell operators, executing with shell=True: %s",
-                              command[:100])
+                logging.warning(
+                    "Command uses shell operators, executing with shell=True: %s",
+                    command[:100])
                 cmd_args = command
                 use_shell = True
             else:
@@ -88,7 +89,8 @@ def output(command, working_dir=None, environment=None, timeout=600):
             out = ""
         return out
     except subprocess.TimeoutExpired as err:
-        logging.error("Command timed out after %d seconds: %s", timeout, command)
+        logging.error("Command timed out after %d seconds: %s", timeout,
+                      command)
         raise
     except IOError as err:
         logging.error("IO error executing command: %s", err)
@@ -135,7 +137,8 @@ def timed(command, working_dir=None, environment=None, timeout=3600):
                     break
 
             if needs_shell:
-                logging.warning("Timed command uses shell operators: %s", command[:100])
+                logging.warning("Timed command uses shell operators: %s",
+                                command[:100])
                 cmd_args = command
                 use_shell = True
             else:
@@ -172,7 +175,8 @@ def timed(command, working_dir=None, environment=None, timeout=3600):
             logging.error('Command failed to complete: %s', command)
             return None
         except subprocess.TimeoutExpired:
-            logging.error('Command timed out after %d seconds: %s', timeout, command)
+            logging.error('Command timed out after %d seconds: %s', timeout,
+                          command)
             return None
     except IOError as err:
         logging.error("IO error in timed execution: %s", err)

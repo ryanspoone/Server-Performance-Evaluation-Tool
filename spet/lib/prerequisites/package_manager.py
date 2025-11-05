@@ -60,7 +60,8 @@ def zypper(packages):
         if package.startswith("-"):
             # Split options and package name
             parts = package.split()
-            cmd_list = ["zypper", "install", "-l", "-y", "--force-resolution"] + parts
+            cmd_list = ["zypper", "install", "-l", "-y", "--force-resolution"
+                       ] + parts
         else:
             # Validate package name
             if not _validate_package_name(package):
@@ -68,7 +69,9 @@ def zypper(packages):
                 fail_count += 1
                 continue
 
-            cmd_list = ["zypper", "install", "-l", "-y", "--force-resolution", package]
+            cmd_list = [
+                "zypper", "install", "-l", "-y", "--force-resolution", package
+            ]
 
         try:
             logging.debug("Installing: %s", package)
@@ -101,7 +104,9 @@ def yum(packages):
     # Install Development Tools group first
     try:
         logging.info("Installing Development Tools group")
-        cmd_list = ["yum", "groupinstall", "-y", "--skip-broken", "Development Tools"]
+        cmd_list = [
+            "yum", "groupinstall", "-y", "--skip-broken", "Development Tools"
+        ]
         execute.output(cmd_list, timeout=600)
     except Exception as err:
         logging.warning("Failed to install Development Tools: %s", err)
@@ -210,7 +215,9 @@ def aptitude(packages):
 
         try:
             logging.debug("Installing: %s", package)
-            cmd_list = ["aptitude", "install", "-y", "--ignore-missing", package]
+            cmd_list = [
+                "aptitude", "install", "-y", "--ignore-missing", package
+            ]
             output = execute.output(cmd_list, timeout=300)
             logging.debug("Installed %s successfully", package)
             success_count += 1
@@ -281,7 +288,8 @@ def unknown(packages):
     prettify.error_message(
         "The appropriate package manager for your system could not be found")
     print(
-        "Please manually install the following packages and rerun this program:")
+        "Please manually install the following packages and rerun this program:"
+    )
     print()
 
     for package in packages:

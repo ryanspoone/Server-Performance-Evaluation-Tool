@@ -93,14 +93,15 @@ def topology():
                 sockets = re.sub(r"Socket\(s\):\s*", "", sockets_list[0])
                 sockets = int(sockets.strip())
 
-            threads_per_core_list = grep.text(lscpu_output, r"Thread\(s\) per core:")
+            threads_per_core_list = grep.text(lscpu_output,
+                                              r"Thread\(s\) per core:")
             if threads_per_core_list and len(threads_per_core_list) > 0:
                 threads_per_core = re.sub(r"Thread\(s\) per core:\s*", "",
                                           threads_per_core_list[0])
                 threads_per_core = int(threads_per_core.strip())
 
             cores_per_processor_list = grep.text(lscpu_output,
-                                            r"Core\(s\) per socket:")
+                                                 r"Core\(s\) per socket:")
             if cores_per_processor_list and len(cores_per_processor_list) > 0:
                 cores_per_processor = re.sub(r"Core\(s\) per socket:\s*", "",
                                              cores_per_processor_list[0])
@@ -113,11 +114,13 @@ def topology():
 
             total_threads_list = grep.text(dmidecode_output, r"Thread Count\:")
             if total_threads_list and len(total_threads_list) > 0:
-                total_threads = re.sub(r"Thread Count:", "", total_threads_list[0])
+                total_threads = re.sub(r"Thread Count:", "",
+                                       total_threads_list[0])
                 total_threads = total_threads.strip().split()[0]
                 total_threads = int(total_threads)
 
-            cores_per_processor_list = grep.text(dmidecode_output, r"Core Count\:")
+            cores_per_processor_list = grep.text(dmidecode_output,
+                                                 r"Core Count\:")
             if cores_per_processor_list and len(cores_per_processor_list) > 0:
                 cores_per_processor = re.sub(r"Core Count:\s*", "",
                                              cores_per_processor_list[0])

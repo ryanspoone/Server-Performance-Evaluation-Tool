@@ -47,7 +47,9 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
         raise ValueError(f"Invalid destination path: {dest}")
 
     # Block writes to sensitive system directories
-    sensitive_dirs = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    sensitive_dirs = [
+        '/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc'
+    ]
     dest_normalized = os.path.normpath(os.path.abspath(dest))
     for sensitive in sensitive_dirs:
         if dest_normalized.startswith(sensitive):
@@ -55,7 +57,9 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
             raise ValueError(f"Cannot write to sensitive system path: {dest}")
 
     # Warn if using absolute path outside typical SPET directories
-    if os.path.isabs(dest) and not any(dest.startswith(d) for d in ['/tmp', '/opt', '/home', '/root', '/usr/local']):
+    if os.path.isabs(dest) and not any(
+            dest.startswith(d)
+            for d in ['/tmp', '/opt', '/home', '/root', '/usr/local']):
         logging.warning("Download to unusual absolute path: %s", dest)
 
     # Create parent directory if needed
@@ -76,16 +80,16 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
 
         logging.info("Downloading: %s", url)
 
-        with urllib.request.urlopen(request, timeout=timeout, context=ssl_context) as resp:
+        with urllib.request.urlopen(request,
+                                    timeout=timeout,
+                                    context=ssl_context) as resp:
             # Check content length if provided
             content_length = resp.getheader('Content-Length')
             if content_length:
                 size = int(content_length)
                 if size > max_size_bytes:
-                    raise ValueError(
-                        f"File too large: {size} bytes "
-                        f"(max {max_size_bytes} bytes)"
-                    )
+                    raise ValueError(f"File too large: {size} bytes "
+                                     f"(max {max_size_bytes} bytes)")
                 logging.info("Download size: %.2f MB", size / (1024 * 1024))
 
             # Download with size checking
@@ -107,18 +111,19 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
                             os.remove(dest)
                         raise ValueError(
                             f"Downloaded data exceeds maximum size "
-                            f"({max_size_mb} MB)"
-                        )
+                            f"({max_size_mb} MB)")
 
                     out.write(chunk)
                     hasher.update(chunk)
 
                     # Log progress every 100 MB
                     if downloaded % (100 * 1024 * 1024) < chunk_size:
-                        logging.info("Downloaded: %.2f MB", downloaded / (1024 * 1024))
+                        logging.info("Downloaded: %.2f MB",
+                                     downloaded / (1024 * 1024))
 
         actual_sha256 = hasher.hexdigest()
-        logging.info("Download complete: %s (%.2f MB)", dest, downloaded / (1024 * 1024))
+        logging.info("Download complete: %s (%.2f MB)", dest,
+                     downloaded / (1024 * 1024))
         logging.info("SHA256: %s", actual_sha256)
 
         # Verify checksum if provided
@@ -132,8 +137,7 @@ def file(url, dest, expected_sha256=None, max_size_mb=1024, timeout=300):
                 logging.error("Actual:   %s", actual_sha256.lower())
                 raise ValueError(
                     f"Checksum verification failed for {url}. "
-                    f"Expected {expected_sha256}, got {actual_sha256}"
-                )
+                    f"Expected {expected_sha256}, got {actual_sha256}")
             logging.info("Checksum verified successfully")
 
         return True

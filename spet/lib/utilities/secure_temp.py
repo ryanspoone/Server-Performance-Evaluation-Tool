@@ -179,9 +179,7 @@ class SecureCredentials:
         """
         if not self.mysql_config_file:
             self.mysql_config_file = create_mysql_config(
-                self.mysql_password,
-                socket_path
-            )
+                self.mysql_password, socket_path)
         return self.mysql_config_file
 
     def cleanup(self):

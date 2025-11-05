@@ -87,7 +87,9 @@ class Docker:
             return True
 
         if not os.path.isfile(file_path):
-            logging.error('Cannot extract Docker because "%s" could not be found.', file_path)
+            logging.error(
+                'Cannot extract Docker because "%s" could not be found.',
+                file_path)
             prettify.error_message(
                 'Cannot extract Docker because "{}" could not be found.'.format(
                     file_path))
@@ -127,11 +129,9 @@ class Docker:
 
         logging.debug("Checking if Docker image is built.")
         try:
-            image_output = execute.output(
-                ["docker", "images"],
-                working_dir=self.docker_dir,
-                environment=env
-            )
+            image_output = execute.output(["docker", "images"],
+                                          working_dir=self.docker_dir,
+                                          environment=env)
             found_images = grep.text(image_output, name)
 
             if found_images:
@@ -161,7 +161,10 @@ class Docker:
         logging.debug("Starting Docker daemon.")
         try:
             proc = subprocess.Popen(
-                [dockerd_path, "--pidfile", pid_file_path, "--data-root", self.data_dir],
+                [
+                    dockerd_path, "--pidfile", pid_file_path, "--data-root",
+                    self.data_dir
+                ],
                 cwd=self.docker_dir,
                 env=shell_env,
                 stdout=subprocess.DEVNULL,
@@ -172,7 +175,8 @@ class Docker:
 
             # Verify daemon started
             if proc.poll() is not None:
-                logging.error("Docker daemon failed to start (exit code %d)", proc.returncode)
+                logging.error("Docker daemon failed to start (exit code %d)",
+                              proc.returncode)
                 return None
 
             logging.info("Docker daemon started successfully")
@@ -265,7 +269,8 @@ class Docker:
         os.makedirs(self.data_dir, exist_ok=True)
 
         # Use secure temporary PID file
-        with secure_temp.SecurePidFile(prefix="docker_", suffix=".pid") as pid_file:
+        with secure_temp.SecurePidFile(prefix="docker_",
+                                       suffix=".pid") as pid_file:
             # Start Docker daemon
             daemon_proc = self._start_docker_daemon(pid_file.name, shell_env)
             if not daemon_proc:
@@ -279,23 +284,23 @@ class Docker:
                 if shutil.which("ifconfig"):
                     try:
                         execute.output(["ifconfig", "docker0", "down"])
-                        execute.output(["ifconfig", "docker0", "172.17.0.1/16", "up"])
+                        execute.output(
+                            ["ifconfig", "docker0", "172.17.0.1/16", "up"])
                     except Exception as e:
-                        logging.warning("Failed to configure docker0 interface: %s", e)
+                        logging.warning(
+                            "Failed to configure docker0 interface: %s", e)
 
                 if not os.path.isfile(dockerfile):
-                    shutil.copyfile(self.src_dir + "/provided/Dockerfile", dockerfile)
+                    shutil.copyfile(self.src_dir + "/provided/Dockerfile",
+                                    dockerfile)
 
                 if not self.__image_built(build_name, env=shell_env):
                     # Build Docker image using list-based command
                     build_cmd = [
-                        "docker", "build",
-                        "--build-arg", f"cores={cores}",
-                        "--build-arg", f"cflags={cflags}",
-                        "--ulimit", "nofile=1048576:1048576",
-                        "--build-arg", f"url={url}",
-                        "--build-arg", f"version={linux_ver}",
-                        "-t", build_name,
+                        "docker", "build", "--build-arg", f"cores={cores}",
+                        "--build-arg", f"cflags={cflags}", "--ulimit",
+                        "nofile=1048576:1048576", "--build-arg", f"url={url}",
+                        "--build-arg", f"version={linux_ver}", "-t", build_name,
                         self.docker_dir
                     ]
 
@@ -382,7 +387,8 @@ class Docker:
             return {"error": message}
 
         # Use secure temporary PID file
-        with secure_temp.SecurePidFile(prefix="docker_", suffix=".pid") as pid_file:
+        with secure_temp.SecurePidFile(prefix="docker_",
+                                       suffix=".pid") as pid_file:
             # Start Docker daemon
             daemon_proc = self._start_docker_daemon(pid_file.name, shell_env)
             if not daemon_proc:
@@ -409,13 +415,10 @@ class Docker:
 
                     # Use list-based command for docker run
                     run_cmd = [
-                        os.path.join(self.docker_dir, "docker"),
-                        "run",
-                        "--ulimit", "nofile=1048576:1048576",
-                        "-e", f"cores={cores}",
-                        "-e", f"cflags={cflags}",
-                        "--name", test_name,
-                        build_name
+                        os.path.join(self.docker_dir,
+                                     "docker"), "run", "--ulimit",
+                        "nofile=1048576:1048576", "-e", f"cores={cores}", "-e",
+                        f"cflags={cflags}", "--name", test_name, build_name
                     ]
 
                     if count == 0:
@@ -432,27 +435,34 @@ class Docker:
                         )
                         procs.append(proc)
                     except Exception as e:
-                        logging.error("Failed to start container %s: %s", test_name, e)
+                        logging.error("Failed to start container %s: %s",
+                                      test_name, e)
 
                 # Wait for all containers to finish
                 for proc in procs:
                     try:
-                        stdout, _ = proc.communicate(timeout=3600)  # 1 hour timeout per container
+                        stdout, _ = proc.communicate(
+                            timeout=3600)  # 1 hour timeout per container
                         if isinstance(stdout, bytes):
                             stdout = stdout.decode()
                         stdout = stdout.strip()
                         try:
                             time_value = float(stdout)
-                            file.write(result_file, "{}\n".format(time_value), append=True)
+                            file.write(result_file,
+                                       "{}\n".format(time_value),
+                                       append=True)
                             times.append(time_value)
                         except ValueError:
-                            logging.debug("Container failed to finish or returned invalid output.")
+                            logging.debug(
+                                "Container failed to finish or returned invalid output."
+                            )
                             logging.debug(stdout)
                     except subprocess.TimeoutExpired:
                         logging.error("Container timed out")
                         proc.kill()
                     except Exception as e:
-                        logging.error("Error communicating with container: %s", e)
+                        logging.error("Error communicating with container: %s",
+                                      e)
 
                 # Remove all containers
                 self._cleanup_containers(shell_env)
@@ -466,7 +476,8 @@ class Docker:
                     else:
                         results["variance"] = 0
                     sorted_times = sorted(times)
-                    results["range"] = sorted_times[-1] - sorted_times[0] if len(sorted_times) > 1 else 0
+                    results["range"] = sorted_times[-1] - sorted_times[
+                        0] if len(sorted_times) > 1 else 0
                 else:
                     results["error"] = "No container times available."
 
@@ -499,24 +510,20 @@ class Docker:
                 # Stop containers
                 try:
                     stop_cmd = [docker_bin, "stop"] + container_ids
-                    execute.output(
-                        stop_cmd,
-                        working_dir=self.docker_dir,
-                        environment=shell_env,
-                        timeout=300
-                    )
+                    execute.output(stop_cmd,
+                                   working_dir=self.docker_dir,
+                                   environment=shell_env,
+                                   timeout=300)
                 except Exception as e:
                     logging.warning("Failed to stop containers: %s", e)
 
                 # Remove containers
                 try:
                     rm_cmd = [docker_bin, "rm"] + container_ids
-                    execute.output(
-                        rm_cmd,
-                        working_dir=self.docker_dir,
-                        environment=shell_env,
-                        timeout=300
-                    )
+                    execute.output(rm_cmd,
+                                   working_dir=self.docker_dir,
+                                   environment=shell_env,
+                                   timeout=300)
                 except Exception as e:
                     logging.warning("Failed to remove containers: %s", e)
 

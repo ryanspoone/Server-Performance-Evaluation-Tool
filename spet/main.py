@@ -546,16 +546,17 @@ def main():
 
     # Dry-run mode: show what would be done without actually doing it
     if opts.dry_run:
-        logging.warning("\n%s", "="*79)
+        logging.warning("\n%s", "=" * 79)
         logging.warning("DRY RUN MODE - No actual changes will be made")
-        logging.warning("%s\n", "="*79)
+        logging.warning("%s\n", "=" * 79)
 
         logging.warning("Would perform system optimizations:")
         logging.warning("  - Set CPU governor to 'performance'")
         logging.warning("  - Disable transparent hugepages")
         logging.warning("  - Disable swap")
         logging.warning("  - Increase ulimits")
-        logging.warning("  - Modify /etc/security/limits.conf and /etc/sysctl.conf")
+        logging.warning(
+            "  - Modify /etc/security/limits.conf and /etc/sysctl.conf")
 
         logging.warning("\nWould install and compile prerequisites:")
         logging.warning("  - OpenMPI %s", versions.openmpi)
@@ -592,7 +593,8 @@ def main():
         logging.warning("\nResults would be saved to:")
         logging.warning("  - %s", results_json)
         logging.warning("  - %s", results_file)
-        logging.warning("\nDry run complete. No changes were made to the system.")
+        logging.warning(
+            "\nDry run complete. No changes were made to the system.")
         return 0
 
     # Optimizations

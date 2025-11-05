@@ -41,29 +41,26 @@ def _safe_extract(tar_file, output_dir="."):
     for member in tar_file.getmembers():
         # Check for absolute paths
         if member.name.startswith('/'):
-            raise ValueError(
-                f"Archive contains absolute path: {member.name}. "
-                f"This is a security risk."
-            )
+            raise ValueError(f"Archive contains absolute path: {member.name}. "
+                             f"This is a security risk.")
 
         # Check for parent directory references
         if '..' in member.name:
             raise ValueError(
                 f"Archive contains parent directory reference: {member.name}. "
-                f"This is a security risk."
-            )
+                f"This is a security risk.")
 
         # Check if resolved path would escape output directory
         if not _is_safe_path(output_dir, member.name):
             raise ValueError(
                 f"Archive contains path that escapes output directory: {member.name}. "
-                f"This is a security risk."
-            )
+                f"This is a security risk.")
 
         # Check for suspicious file types
         if member.issym() or member.islnk():
             # Verify symlink targets are also safe
-            if member.linkname and not _is_safe_path(output_dir, member.linkname):
+            if member.linkname and not _is_safe_path(output_dir,
+                                                     member.linkname):
                 raise ValueError(
                     f"Archive contains unsafe symlink: {member.name} -> {member.linkname}"
                 )
@@ -109,7 +106,8 @@ def tar(archive, output_dir="."):
 
     # Validate output directory doesn't contain parent references
     if '..' in output_dir:
-        logging.error("Output directory contains parent reference: %s", output_dir)
+        logging.error("Output directory contains parent reference: %s",
+                      output_dir)
         raise ValueError(f"Invalid output directory: {output_dir}")
 
     try:

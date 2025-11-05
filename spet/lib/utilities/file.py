@@ -28,11 +28,10 @@ def read(file_path, max_size_mb=100):
     max_size_bytes = max_size_mb * 1024 * 1024
     file_size = os.path.getsize(file_path)
     if file_size > max_size_bytes:
-        logging.error("File too large: %s (%.2f MB)", file_path, file_size / (1024 * 1024))
-        raise ValueError(
-            f"File too large: {file_path} ({file_size} bytes, "
-            f"max {max_size_bytes} bytes)"
-        )
+        logging.error("File too large: %s (%.2f MB)", file_path,
+                      file_size / (1024 * 1024))
+        raise ValueError(f"File too large: {file_path} ({file_size} bytes, "
+                         f"max {max_size_bytes} bytes)")
 
     try:
         # Use context manager and specify encoding
@@ -45,7 +44,8 @@ def read(file_path, max_size_mb=100):
 
     except UnicodeDecodeError:
         # If UTF-8 fails, try binary mode
-        logging.warning("UTF-8 decode failed for %s, reading as binary", file_path)
+        logging.warning("UTF-8 decode failed for %s, reading as binary",
+                        file_path)
         with open(file_path, 'rb') as f:
             content = f.read()
         return content.decode('utf-8', errors='replace')
@@ -76,12 +76,15 @@ def touch(file_path):
         raise ValueError(f"Invalid file path: {file_path}")
 
     # Block writes to critical system files
-    sensitive_files = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    sensitive_files = [
+        '/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc'
+    ]
     path_normalized = os.path.normpath(os.path.abspath(file_path))
     for sensitive in sensitive_files:
         if path_normalized.startswith(sensitive):
             logging.error("Blocked write to sensitive path: %s", file_path)
-            raise ValueError(f"Cannot write to sensitive system path: {file_path}")
+            raise ValueError(
+                f"Cannot write to sensitive system path: {file_path}")
 
     try:
         basedir = os.path.dirname(file_path)
@@ -127,15 +130,20 @@ def write(file_path, text, append=False, encoding='utf-8'):
         raise ValueError(f"Invalid file path: {file_path}")
 
     # Block writes to critical system files
-    sensitive_files = ['/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc']
+    sensitive_files = [
+        '/etc/passwd', '/etc/shadow', '/etc/sudoers', '/boot', '/sys', '/proc'
+    ]
     path_normalized = os.path.normpath(os.path.abspath(file_path))
     for sensitive in sensitive_files:
         if path_normalized.startswith(sensitive):
             logging.error("Blocked write to sensitive path: %s", file_path)
-            raise ValueError(f"Cannot write to sensitive system path: {file_path}")
+            raise ValueError(
+                f"Cannot write to sensitive system path: {file_path}")
 
     if text is None:
-        logging.warning("Attempting to write None to %s, converting to empty string", file_path)
+        logging.warning(
+            "Attempting to write None to %s, converting to empty string",
+            file_path)
         text = ""
 
     try:
@@ -150,7 +158,8 @@ def write(file_path, text, append=False, encoding='utf-8'):
         with open(file_path, write_type, encoding=encoding) as f:
             f.write(text)
 
-        logging.debug("Wrote %d bytes to %s (append=%s)", len(text), file_path, append)
+        logging.debug("Wrote %d bytes to %s (append=%s)", len(text), file_path,
+                      append)
         return True
 
     except IOError as err:

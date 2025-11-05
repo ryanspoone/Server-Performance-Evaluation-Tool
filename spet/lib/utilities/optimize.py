@@ -45,17 +45,22 @@ def performance_governor():
             if not re.match(pattern, cpu):
                 continue
 
-            governor_path = os.path.join(cpu_root, cpu, "cpufreq", "scaling_governor")
+            governor_path = os.path.join(cpu_root, cpu, "cpufreq",
+                                         "scaling_governor")
 
             if os.path.isfile(governor_path):
                 # Save original setting before changing
                 if governor_path not in _ORIGINAL_SETTINGS:
                     try:
-                        original = file.read(governor_path, max_size_mb=1).strip()
+                        original = file.read(governor_path,
+                                             max_size_mb=1).strip()
                         _ORIGINAL_SETTINGS[governor_path] = original
-                        logging.debug("Saved original governor for %s: %s", cpu, original)
+                        logging.debug("Saved original governor for %s: %s", cpu,
+                                      original)
                     except Exception as e:
-                        logging.warning("Failed to read original governor for %s: %s", cpu, e)
+                        logging.warning(
+                            "Failed to read original governor for %s: %s", cpu,
+                            e)
                         continue
 
                 # Set to performance
@@ -64,10 +69,12 @@ def performance_governor():
                     changed_count += 1
                     logging.debug("Set %s governor to performance", cpu)
                 except Exception as e:
-                    logging.error("Failed to set performance governor for %s: %s", cpu, e)
+                    logging.error(
+                        "Failed to set performance governor for %s: %s", cpu, e)
 
         if changed_count > 0:
-            logging.info("Changed %d CPU governors to performance mode", changed_count)
+            logging.info("Changed %d CPU governors to performance mode",
+                         changed_count)
             return True
         else:
             logging.warning("No CPU governors were changed")
@@ -92,11 +99,13 @@ def disable_hugepages():
         # Save original setting
         if transparent_hugepage not in _ORIGINAL_SETTINGS:
             try:
-                original = file.read(transparent_hugepage, max_size_mb=1).strip()
+                original = file.read(transparent_hugepage,
+                                     max_size_mb=1).strip()
                 _ORIGINAL_SETTINGS[transparent_hugepage] = original
                 logging.debug("Saved original hugepages setting: %s", original)
             except Exception as e:
-                logging.warning("Failed to read original hugepages setting: %s", e)
+                logging.warning("Failed to read original hugepages setting: %s",
+                                e)
                 return False
 
         # Disable hugepages
@@ -129,7 +138,8 @@ def disable_swap():
                 swap_info = execute.output(["swapon", "--show"])
                 swap_was_enabled = bool(swap_info and swap_info.strip())
                 _ORIGINAL_SETTINGS["swap_disabled"] = swap_was_enabled
-                logging.debug("Swap was originally %s", "enabled" if swap_was_enabled else "disabled")
+                logging.debug("Swap was originally %s",
+                              "enabled" if swap_was_enabled else "disabled")
             except Exception as e:
                 logging.warning("Failed to check swap status: %s", e)
                 # Assume it was enabled if we can't check
@@ -180,17 +190,20 @@ def restore_system_settings():
             # Restore file-based settings
             if os.path.isfile(setting_path):
                 file.write(setting_path, original_value)
-                logging.debug("Restored %s to: %s", setting_path, original_value)
+                logging.debug("Restored %s to: %s", setting_path,
+                              original_value)
                 restored_count += 1
             else:
-                logging.warning("Setting path no longer exists: %s", setting_path)
+                logging.warning("Setting path no longer exists: %s",
+                                setting_path)
                 failed_count += 1
 
         except Exception as e:
             logging.error("Failed to restore %s: %s", setting_path, e)
             failed_count += 1
 
-    logging.info("Restored %d settings, %d failed", restored_count, failed_count)
+    logging.info("Restored %d settings, %d failed", restored_count,
+                 failed_count)
 
 
 def prerun():
@@ -267,8 +280,11 @@ def nofiles():
             try:
                 lines = grep.file(limits_conf, "nofile 1048576")
                 if not lines:
-                    logging.warning("Modifying %s (changes are permanent)", limits_conf)
-                    file.write(limits_conf, "\n* - nofile 1048576\n", append=True)
+                    logging.warning("Modifying %s (changes are permanent)",
+                                    limits_conf)
+                    file.write(limits_conf,
+                               "\n* - nofile 1048576\n",
+                               append=True)
                     modified = True
             except Exception as e:
                 logging.error("Failed to modify %s: %s", limits_conf, e)
@@ -277,8 +293,11 @@ def nofiles():
             try:
                 lines = grep.file(sysctl_conf, "fs.file-max = 1048576")
                 if not lines:
-                    logging.warning("Modifying %s (changes are permanent)", sysctl_conf)
-                    file.write(sysctl_conf, "\nfs.file-max = 1048576\n", append=True)
+                    logging.warning("Modifying %s (changes are permanent)",
+                                    sysctl_conf)
+                    file.write(sysctl_conf,
+                               "\nfs.file-max = 1048576\n",
+                               append=True)
                     modified = True
 
                 if modified and shutil.which("sysctl"):
