@@ -54,6 +54,12 @@ class Options:
             help="Enable AVX-512 for LINPACK.",
             action="store_true",
         )
+        self.parser.add_argument(
+            "--dry-run",
+            dest="dry_run",
+            help="Show what would be done without actually running benchmarks.",
+            action="store_true",
+        )
 
     def parse(self, args=None):
         """Parse known and unknown `args`.

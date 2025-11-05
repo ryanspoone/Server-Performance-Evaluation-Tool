@@ -545,6 +545,57 @@ def main():
     logging.warning("\n")
     logging.warning(system.table(system_info, avx512=opts.avx512))
 
+    # Dry-run mode: show what would be done without actually doing it
+    if opts.dry_run:
+        logging.warning("\n" + "="*79)
+        logging.warning("DRY RUN MODE - No actual changes will be made")
+        logging.warning("="*79 + "\n")
+
+        logging.warning("Would perform system optimizations:")
+        logging.warning("  - Set CPU governor to 'performance'")
+        logging.warning("  - Disable transparent hugepages")
+        logging.warning("  - Disable swap")
+        logging.warning("  - Increase ulimits")
+        logging.warning("  - Modify /etc/security/limits.conf and /etc/sysctl.conf")
+
+        logging.warning("\nWould install and compile prerequisites:")
+        logging.warning("  - OpenMPI %s", versions.openmpi)
+        if "intel" in system_info.processorName.lower():
+            logging.warning("  - Intel MKL %s", versions.mkl)
+        elif "amd" in system_info.processorName.lower():
+            logging.warning("  - AMD BLIS %s", versions.blis)
+        else:
+            logging.warning("  - OpenBLAS %s", versions.openblas)
+        logging.warning("  - glibc %s", versions.glibc)
+        logging.warning("  - Maven %s", versions.maven)
+        logging.warning("  - MySQL %s", versions.mysql)
+        logging.warning("  - Cassandra %s", versions.cassandra)
+
+        logging.warning("\nWould run benchmarks:")
+        benchmarks_to_run = [
+            ("lmbench", "Cache Latency"),
+            ("mlc", "Memory Latency"),
+            ("openssl", "Cryptography"),
+            ("compilation", "Kernel Compilation"),
+            ("zlib", "Compression"),
+            ("linpack", "Floating-point"),
+            ("stream", "Memory Bandwidth"),
+            ("nosql", "Database NoSQL (Cassandra)"),
+            ("sql", "Database SQL (MySQL)"),
+            ("docker", "Container Performance"),
+        ]
+        for bench_name, bench_desc in benchmarks_to_run:
+            if opts.excludes and bench_name in opts.excludes:
+                logging.warning("  - %s: EXCLUDED", bench_desc)
+            else:
+                logging.warning("  - %s: WOULD RUN", bench_desc)
+
+        logging.warning("\nResults would be saved to:")
+        logging.warning("  - %s", results_json)
+        logging.warning("  - %s", results_file)
+        logging.warning("\nDry run complete. No changes were made to the system.")
+        return 0
+
     # Optimizations
     optimize.performance_governor()
     optimize.disable_hugepages()

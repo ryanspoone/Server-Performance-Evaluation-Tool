@@ -58,12 +58,13 @@ be located in the Server Performance Evaluation Tool's
 
 ### Additional Options
 
-| Option    | GNU long option  | Meaning                                                                                                                                                     |
-| --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-v`      | `--verbose`      | Show additional information on SPET progress.                                                                                                               |
-| `-d`      | `--debug`        | Show debugging information.                                                                                                                                 |
-| `-e [..]` | `--exclude [..]` | Exclude the desired benchmark(s). Available options: `lmbench`, `mlc`, `openssl`, `compilation`, `zlib`, `linpack`, `stream`, `nosql`, `sql`, and `docker`. |
-| `-avx512` | `--avx512`       | Enable AVX-512 for High-Performance Linpack.                                                                                                                |
+| Option      | GNU long option  | Meaning                                                                                                                                                     |
+| ----------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-v`        | `--verbose`      | Show additional information on SPET progress.                                                                                                               |
+| `-d`        | `--debug`        | Show debugging information.                                                                                                                                 |
+| `-e [..]`   | `--exclude [..]` | Exclude the desired benchmark(s). Available options: `lmbench`, `mlc`, `openssl`, `compilation`, `zlib`, `linpack`, `stream`, `nosql`, `sql`, and `docker`. |
+| `-avx512`   | `--avx512`       | Enable AVX-512 for High-Performance Linpack.                                                                                                                |
+| `--dry-run` | `--dry-run`      | Show what would be done without actually running benchmarks or making system changes.                                                                       |
 
 ## Performance Tests
 

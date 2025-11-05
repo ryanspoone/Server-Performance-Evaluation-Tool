@@ -2,5 +2,8 @@ resource
 recommonmark
 pylint
 pytest
+pytest-cov
 yapf
+black
+flake8
 .
