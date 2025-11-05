@@ -463,16 +463,15 @@ def main():
     run_num.write(run_file)
     nrun = run_num.read(run_file)
 
-    results_file_starter = "SPET.{}.{}".format(nrun,
-                                               uglify.filename(processor_name))
+    results_file_starter = f"SPET.{nrun}.{uglify.filename(processor_name)}"
 
-    run_dir = "{}/{}".format(results_dir, results_file_starter)
+    run_dir = f"{results_dir}/{results_file_starter}"
 
     # SPET result files
-    results_json = "{}/{}.results.json".format(run_dir, results_file_starter)
-    results_file = "{}/{}.results.txt".format(run_dir, results_file_starter)
-    debug_file = "{}/{}.debug.log".format(run_dir, results_file_starter)
-    log_file = "{}/{}.log".format(run_dir, results_file_starter)
+    results_json = f"{run_dir}/{results_file_starter}.results.json"
+    results_file = f"{run_dir}/{results_file_starter}.results.txt"
+    debug_file = f"{run_dir}/{results_file_starter}.debug.log"
+    log_file = f"{run_dir}/{results_file_starter}.log"
 
     os.makedirs(run_dir, exist_ok=True)
 
@@ -547,9 +546,9 @@ def main():
 
     # Dry-run mode: show what would be done without actually doing it
     if opts.dry_run:
-        logging.warning("\n" + "="*79)
+        logging.warning("\n%s", "="*79)
         logging.warning("DRY RUN MODE - No actual changes will be made")
-        logging.warning("="*79 + "\n")
+        logging.warning("%s\n", "="*79)
 
         logging.warning("Would perform system optimizations:")
         logging.warning("  - Set CPU governor to 'performance'")
@@ -633,13 +632,15 @@ def main():
     print(debug_file)
     print("\n")
 
+    return 0
 
-def signal_handler(signum, frame):
+
+def signal_handler(signum, _frame):
     """Handle interrupt signals gracefully with cleanup.
 
     Args:
         signum (int): The signal number.
-        frame: The current stack frame.
+        _frame: The current stack frame (unused).
     """
     signal_names = {
         signal.SIGINT: "SIGINT (Ctrl+C)",
